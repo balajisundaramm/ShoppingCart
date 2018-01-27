@@ -1,0 +1,50 @@
+Create schema
+-------------------------------
+CREATE SCHEMA `ShoppingCart` ;
+------------------------------
+create admin user details table
+------------------------------------
+CREATE TABLE `ShoppingCart`.`Admins` (
+  `AdminsId` INT NOT NULL AUTO_INCREMENT,
+  `AdminUserName` VARCHAR(45) NOT NULL,
+  `AdminPassword` VARCHAR(45) NOT NULL,
+  PRIMARY KEY (`AdminsId`),
+  UNIQUE INDEX `AdminUserName_UNIQUE` (`AdminUserName` ASC));
+---------------------------------------------
+insert user details
+---------------------
+INSERT INTO `ShoppingCart`.`Admins` 
+(`AdminsId`, `AdminUserName`, `AdminPassword`) 
+VALUES ('1', 'admin', 'admin123');
+------------------------------------
+CATEGORIES
+------------------------------------
+CREATE TABLE `ShoppingCart`.`Categories` (
+  `idCategories` INT NOT NULL AUTO_INCREMENT,
+  `CategoryName` VARCHAR(45) NULL,
+  `CategoryDescription` VARCHAR(2000) NULL,
+  PRIMARY KEY (`idCategories`),
+  UNIQUE INDEX `CategoryName_UNIQUE` (`CategoryName` ASC));
+------------------------
+ALTER TABLE `ShoppingCart`.`Categories` 
+CHANGE COLUMN `CategoryName` `CategoryName` VARCHAR(45) NOT NULL ;
+-------------------------------
+ALTER TABLE `ShoppingCart`.`Categories` 
+CHANGE COLUMN `CategoryDescription` `CategoryDescription` VARCHAR(2000) NOT NULL ;
+---------------------------------
+Users
+-------------------------------
+CREATE TABLE `ShoppingCart`.`Users` (
+  `idUsers` INT NOT NULL AUTO_INCREMENT,
+  `Name` VARCHAR(45) NOT NULL,
+  `Email` VARCHAR(45) NOT NULL,
+  `Mobile` VARCHAR(45) NOT NULL,
+  `Password` VARCHAR(45) NOT NULL,
+  `Gender` VARCHAR(45) NOT NULL,
+  `Address` VARCHAR(45) NOT NULL,
+  `DOB` VARCHAR(45) NOT NULL,
+  PRIMARY KEY (`idUsers`),
+  UNIQUE INDEX `idUsers_UNIQUE` (`idUsers` ASC),
+  UNIQUE INDEX `Email_UNIQUE` (`Email` ASC),
+  UNIQUE INDEX `Mobile_UNIQUE` (`Mobile` ASC));
+
