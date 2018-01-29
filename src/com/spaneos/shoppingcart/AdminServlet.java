@@ -119,8 +119,9 @@ public class AdminServlet extends HttpServlet {
 				}
 			}
 		}
-
-
+		
+		if(uri.contains("")) {
+			
+		}
 	}
-
 }

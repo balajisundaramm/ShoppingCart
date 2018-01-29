@@ -42,11 +42,9 @@ input, textarea {
 					<button class="btn btn-info">Categories</button>
 					<div class="w3-dropdown-content w3-bar-block w3-border">
 						<jstl:forEach items="${category}" var="categoryName">
-							<a href="#">${categoryName}</a><br/>
+							<a href="category_${categoryName}.ado">${categoryName}</a><br/>
 						</jstl:forEach>
-						<!-- <a href="#">Kitchen & Dining</a><br /> <a href="#">Home Decor</a><br />
-						<a href="#">Computers & Accessories</a><br /> --> <a
-							href="#addCategory" data-toggle="modal"
+						<a href="#addCategory" data-toggle="modal"
 							data-target="#addCategory">Add New</a>
 					</div>
 				</div>
