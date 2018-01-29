@@ -29,6 +29,8 @@ public class Model {
 			if (con == null) {
 				return "cannot connect to DB. Contact admin!!!";
 			} else {
+				String name=bean.getAdminUserName();
+				String pass=bean.getAdminPassword();
 				ps_sql = con.prepareStatement("select * from Admins where AdminUserName=? and AdminPassword=?");
 				ps_sql.setString(1, bean.getAdminUserName());
 				ps_sql.setString(2, bean.getAdminPassword());
@@ -158,5 +160,37 @@ public class Model {
 			return "Oops something went wrong!" + e.getMessage();
 		}
 
+	}
+	
+	public List<UserBean> fetchusers(){
+		Connection con = null;
+		PreparedStatement ps_sql = null, ps_ins = null;
+		ResultSet rs = null;
+		List<UserBean> users=new ArrayList<UserBean>();
+		try {
+			con = JDBCHelper.getConnection();
+			if (con == null) {
+				return null;
+			} else {
+				ps_sql = con.prepareStatement("select * from Users");
+				ps_sql.execute();
+				rs = ps_sql.getResultSet();
+				while(rs.next()) {
+					String name=rs.getString("Name");
+					String email=rs.getString("Email");
+					String mobile=rs.getString("Mobile");
+					LOG.info("name "+name);
+					LOG.info("user email "+email);
+					LOG.info("user mobile "+mobile);
+					UserBean user=new UserBean(name,email,mobile);
+					users.add(user);
+				}
+				return users;
+			}
+		}
+		catch (SQLException e) {
+			e.printStackTrace();
+			return null;
+		}
 	}
 }

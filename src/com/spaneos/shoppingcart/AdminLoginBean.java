@@ -1,6 +1,5 @@
 package com.spaneos.shoppingcart;
 
-import sun.security.util.Password;
 
 public class AdminLoginBean {
 	private String adminUserName;

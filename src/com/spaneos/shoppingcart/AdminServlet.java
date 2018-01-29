@@ -74,10 +74,14 @@ public class AdminServlet extends HttpServlet {
 			session.setAttribute("admin", bean.getAdminUserName());
 
 			String result=model.adminLogin(bean);
+			LOG.info("admin login"+result);
 			if(result.equals("SUCCESS")) {
 				// Registration succeeded
 				// forward to Menu.jsp
 				request.setAttribute("message", "You have loggedin successfully!!! ");
+				List<String> categories=model.getCategories();
+				LOG.info("list"+categories);
+				request.setAttribute("category",categories);
 				rd=request.getRequestDispatcher("adminHome.jsp");
 				rd.forward(request, response);
 			}
@@ -104,10 +108,6 @@ public class AdminServlet extends HttpServlet {
 					// Registration succeeded
 					// forward to Menu.jsp
 					request.setAttribute("message", "Category has been added successfully!!!");
-					
-					List<String> categories=model.getCategories();
-					LOG.info("list"+categories);
-					request.setAttribute("category",categories);
 					rd=request.getRequestDispatcher("adminHome.jsp");
 					rd.forward(request, response);
 				}
@@ -118,10 +118,29 @@ public class AdminServlet extends HttpServlet {
 					rd.forward(request, response);
 				}
 			}
-		}
+		} 
 		
-		if(uri.contains("")) {
-			
-		}
+		if(uri.contains("/listOfUsers.ado")) {
+			HttpSession session = request.getSession(false);
+			if(session==null || session.getAttribute("admin")==null) {
+				request.setAttribute("errorMsg", "First login, then add Contact!");
+				rd = request.getRequestDispatcher("Error.jsp");
+				rd.forward(request, response);
+			}
+			else {
+		 		List<UserBean> users=model.fetchusers();
+				if(users!=null) {
+					request.setAttribute("userDetails", users);
+					rd=request.getRequestDispatcher("users.jsp");
+					rd.forward(request, response);
+				}
+				else {
+					//request.setAttribute("errorMsg", );
+					rd=request.getRequestDispatcher("home.html");
+					rd.forward(request, response);
+		 		}
+			} 
+			 
+		} 
 	}
 }

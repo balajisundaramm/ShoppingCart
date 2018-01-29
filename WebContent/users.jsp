@@ -1,9 +1,10 @@
 <%@ page language="java" contentType="text/html; charset=US-ASCII"
-    pageEncoding="US-ASCII"%>
-<%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="jstl"%>  <!DOCTYPE html>
+	pageEncoding="US-ASCII"%>
+<%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="jstl"%>
+<!DOCTYPE html>
 <html>
 <head>
-<title>Home</title>
+<title>Users list</title>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="stylesheet"
@@ -19,10 +20,6 @@ body {
 	background-image: url("images/shopping1.jpg");
 	background-repeat: no-repeat;
 	background-size: 100%;
-}
-
-span {
-	color: red;
 }
 
 input, textarea {
@@ -42,13 +39,14 @@ input, textarea {
 					<button class="btn btn-info">Categories</button>
 					<div class="w3-dropdown-content w3-bar-block w3-border">
 						<jstl:forEach items="${category}" var="categoryName">
-							<a href="category_${categoryName}.ado">${categoryName}</a><br/>
+							<a href="category_${categoryName}.ado">${categoryName}</a>
+							<br />
 						</jstl:forEach>
 						<a href="#addCategory" data-toggle="modal"
 							data-target="#addCategory">Add New</a>
 					</div>
 				</div>
-				<button class="btn btn-info" onclick="location.href='listOfUsers.ado';">Users</button>
+				<button class="btn btn-info" onclick="location.href='users.jsp';">Users</button>
 				<button class="btn btn-info">Logout</button>
 			</div>
 		</div>
@@ -90,6 +88,42 @@ input, textarea {
 					</form>
 				</div>
 			</div>
+		</div>
+		<br />
+		<!--Users list table  -->
+		<div class=" row col-sm-12">
+			<div class="col-sm-3">
+				<h3>Kitchen</h3>
+			</div>
+
+			<div class="col-sm-1">
+				<button type="button" class="edit btn btn-warning" id="">
+					<span class="glyphicon glyphicon-edit"></span>
+				</button>
+			</div>
+			<div class="col-sm-1">
+				<button id="" type="button" class="delete btn btn-warning">
+					<span class="glyphicon glyphicon-trash"></span>
+				</button>
+			</div>
+		</div>
+		<div>
+			<table class="table" id="empTable">
+				<tr>
+					<th>User Name</th>
+					<th>Email</th>
+					<th>Mobile</th>
+					<th>Edit</th>
+					<th>Delete</th>
+				</tr>
+				<jstl:forEach items="${userDetails}" var="user">
+				<td>${user}</td>
+				<td>${user}</td>
+				<td>${user}</td>
+				<td></td>
+				<td></td>
+				</jstl:forEach>
+			</table>
 		</div>
 	</div>
 </body>
