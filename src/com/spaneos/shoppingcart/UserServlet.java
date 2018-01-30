@@ -24,7 +24,7 @@ public class UserServlet extends HttpServlet {
 
 	/**
 	 * @see HttpServlet#HttpServlet()
-	 */
+	 */ 
 	public UserServlet() {
 		super();
 		LOG.info("User servlet has been initiated.");
@@ -37,7 +37,7 @@ public class UserServlet extends HttpServlet {
 		// TODO Auto-generated method stub
 		//response.getWriter().append("Served at: ").append(request.getContextPath());
 		process(request,response);
-	}
+	} 
 
 	/**
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)

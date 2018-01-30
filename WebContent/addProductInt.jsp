@@ -4,12 +4,12 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>Add Category</title>
+<title>addProductInt</title>
 </head>
 <body>
-<jsp:useBean id="addCategory" class="com.spaneos.shoppingcart.CategoryBean" scope="request">
-<jsp:setProperty property="*" name="addCategory"/>
+<jsp:useBean id="addProduct" class="com.spaneos.shoppingcart.ProductBean" scope="request">
+<jsp:setProperty property="*" name="addProduct"/>
 </jsp:useBean>
-<jsp:forward page="categorySuccess.ado"/>
+<jsp:forward page="addProduct.ado"/>
 </body>
 </html>
