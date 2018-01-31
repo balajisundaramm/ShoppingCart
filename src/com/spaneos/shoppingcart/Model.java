@@ -8,6 +8,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.log4j.Logger;
+//import org.json.JSONException;
+//import org.json.JSONObject;
 
 public class Model {
 	private final static Logger LOG = Logger.getLogger(Model.class.getName());
@@ -79,24 +81,28 @@ public class Model {
 	 * 
 	 * @return
 	 */
-	public List<String> getCategories(){
+	public List<CategoryBean> getCategories(){
 		Connection con=null;
 		PreparedStatement ps_sql=null, ps_ins=null;
 		ResultSet rs=null;
-		List<String> categories=null;
+		List<CategoryBean> categories=null;
 		try {
 			con=JDBCHelper.getConnection();
 			if(con==null) {
 				return null;
 			}
 			else {
-				ps_sql=con.prepareStatement("select CategoryName from Categories");
+				ps_sql=con.prepareStatement("select * from Categories");
 				ps_sql.execute();
 				rs=ps_sql.getResultSet();
-				categories=new ArrayList<String>();
+				categories=new ArrayList<CategoryBean>();
 				while(rs.next()) {
 					String name=rs.getString("CategoryName");
-					categories.add(name);
+					String description=rs.getString("CategoryDescription");
+					CategoryBean bean=new CategoryBean();
+					bean.setCategoryName(name);
+					bean.setCategoryDescription(description);
+					categories.add(bean);
 				}
 				return categories;
 			}
@@ -285,6 +291,7 @@ public class Model {
 					product.setProductName(name);
 					product.setPrice(price);
 					product.setStock(stock);
+					product.setCategoryName(categoryName);
 					products.add(product);
 					LOG.info("Products in modal "+products);
 
@@ -297,6 +304,105 @@ public class Model {
 			return null;
 		}
 	}
+	
+	public List<ProductBean> fetchSpecificProduct(String productName){
+		LOG.info("Modal category name"+productName);
+		Connection con = null;
+		PreparedStatement ps_sql = null, ps_ins = null;
+		ResultSet rs = null;
+		List<ProductBean> products=new ArrayList<ProductBean>();
+		try {
+			con = JDBCHelper.getConnection();
+			if (con == null) {
+				throw new RuntimeException("Cannot connct to DB. Contact admin.");
+			} else {
+				ps_sql = con.prepareStatement("select * from Products where Name=?");
+				ps_sql.setString(1, productName);
+				ps_sql.execute();
+				rs = ps_sql.getResultSet();
+				while(rs.next()) {
+					String name=rs.getString("Name");
+					int price=rs.getInt("Price");
+					int stock=rs.getInt("InStock");
+					String description=rs.getString("Description");
+					String categoryName=rs.getString("CategoryName");
+					LOG.info("product name "+name);
+					LOG.info("product price"+price);
+					LOG.info("product in stock"+stock);
+					LOG.info("product in description"+description);
+
+					ProductBean product=new ProductBean();
+					product.setProductName(name);
+					product.setPrice(price);
+					product.setStock(stock);
+					product.setDescription(description);
+					product.setCategoryName(productName);
+					product.setCategoryName(categoryName);
+					products.add(product);
+					LOG.info("Products in modal "+products);
+
+				}
+				return products;
+			}
+		}
+		catch (SQLException e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+	
+	/*public List<JSONObject> fetchJsonProduct(String productName){
+		LOG.info("Modal category name"+productName);
+		Connection con = null;
+		PreparedStatement ps_sql = null, ps_ins = null;
+		ResultSet rs = null;
+		List<JSONObject> products=new ArrayList<JSONObject>();
+		try {
+			con = JDBCHelper.getConnection();
+			if (con == null) {
+				throw new RuntimeException("Cannot connct to DB. Contact admin.");
+			} else {
+				ps_sql = con.prepareStatement("select * from Products where Name=?");
+				ps_sql.setString(1, productName);
+				ps_sql.execute();
+				rs = ps_sql.getResultSet();
+				while(rs.next()) {
+					String name=rs.getString("Name");
+					String description=rs.getString("Description");
+					String categoryName=rs.getString("CategoryName");
+					int price=rs.getInt("Price");
+					int stock=rs.getInt("InStock");
+					LOG.info("product name "+name);
+					LOG.info("product price"+price);
+					LOG.info("product in stock"+stock);
+					LOG.info("product in description"+description);
+					JSONObject item = new JSONObject();
+					
+						item.put("productName", name);
+						item.put("productDescription", description);
+						item.put("productPrice", price);
+						item.put("productStock", stock);
+						item.put("categoryNam", categoryName);
+
+					
+
+					LOG.info("Products in modal "+products);
+
+				}
+				return products;
+			}
+		}
+		catch (SQLException e) {
+			e.printStackTrace();
+			return null;
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return null;
+		}
+	}
+	
+*/	
 	
 	/**
 	 * 

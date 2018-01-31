@@ -2,6 +2,7 @@ package com.spaneos.shoppingcart;
 
 
 import java.io.IOException;
+import java.util.List;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -56,6 +57,10 @@ public class UserServlet extends HttpServlet {
 		String con=new Model().register();
 		LOG.info(con);
 
+		List<CategoryBean> categories=model.getCategories();
+		LOG.info("Category bean "+categories);
+		request.setAttribute("category",categories);
+		
 		// Create Request Dispatcher & assign null
 		RequestDispatcher rd=null;
 		// Create Model 
@@ -100,8 +105,21 @@ public class UserServlet extends HttpServlet {
 			}
 			else {
 				request.setAttribute("errorMsg", result);
-				rd=request.getRequestDispatcher("home.html");
+				rd=request.getRequestDispatcher("userHome.jsp");
 				rd.forward(request, response);
+			}
+		}
+		
+		if(uri.contains("/home.udo")) {
+			HttpSession session = request.getSession(false);
+			if(session==null || session.getAttribute("user")==null) {
+				request.setAttribute("errorMsg", "First login, then add Contact!");
+				rd = request.getRequestDispatcher("Error.jsp");
+				rd.forward(request, response);
+			}
+			else {
+			rd=request.getRequestDispatcher("userHome.jsp");
+			rd.forward(request, response);
 			}
 		}
 	}

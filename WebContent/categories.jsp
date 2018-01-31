@@ -27,11 +27,11 @@ input, textarea {
 }
 </style>
 <script>
-function confirmDelete(){
-	var flag=confirm('Are you sure you want to delete this product?');
-	return flag;
-}
-	$('document')
+	$(document).ready(function() {
+		$(".edit").on('click', function () {
+			$('#editProduct').modal('show');
+		});
+	});
 </script>
 </head>
 <body>
@@ -46,8 +46,9 @@ function confirmDelete(){
 			</div>
 
 			<div class="col-sm-1">
-				<button type="button" class="edit btn btn-warning" id=""
-					data-toggle="modal" data-target="#editCategory">
+				<button type="button" class="edit btn btn-warning"
+					id="${categoryName}" data-toggle="modal"
+					data-target="#editCategory">
 					<span class="glyphicon glyphicon-edit"></span>
 				</button>
 			</div>
@@ -74,17 +75,24 @@ function confirmDelete(){
 						<td>${products.productName}</td>
 						<td>${products.price}</td>
 						<td>${products.stock}</td>
-						<td>
-							<button type="button" class="edit btn btn-warning" id=""
+						<%-- <td>
+							<button type="button" class="editProduct btn btn-warning" id="${products.productName}"
 								data-toggle="modal" data-target="#editProduct">
 								<span class="glyphicon glyphicon-edit"></span>
 							</button>
+						</td> --%>
+						<td>
+							<a href="editProduct.ado?productName=${products.productName}
+						&categoryName=${categoryName}" class="editProduct btn btn-warning" id="${products.productName}">
+<!-- 								data-toggle="modal" data-target="#editProduct">
+ -->								<span class="glyphicon glyphicon-edit"></span>
+							</a>
 						</td>
 						<td><a id=""
 							href="deleteProduct.ado?productName=${products.productName}
 						&categoryName=${categoryName}"
 							class="delete btn btn-warning"
-							onclick="return confirmDelete()">
+							onclick="return confirm('Are you sure you want to delete this product?');">
 								<span class="glyphicon glyphicon-trash"></span>
 						</a></td>
 					</tr>
@@ -98,7 +106,7 @@ function confirmDelete(){
 			</div>
 		</div>
 
-		<!-- Modal for Products  -->
+		<!-- Modal for add Products  -->
 		<div class="modal fade" id="addProduct" role="dialog">
 			<div class="modal-dialog">
 				<div class="modal-content">
@@ -119,8 +127,8 @@ function confirmDelete(){
 							</div> -->
 							<div class="col-sm-8">
 								<select name="categoryName">
-									<jstl:forEach items="${category}" var="categoryName">
-										<option value="${categoryName}">${categoryName}</option>
+									<jstl:forEach items="${category}" var="categoryN">
+										<option value="${categoryN.categoryName}">${categoryN.categoryName}</option>
 									</jstl:forEach>
 								</select>
 							</div>
@@ -129,7 +137,7 @@ function confirmDelete(){
 								<lable>Product Name : <span>*</span></lable>
 							</div>
 							<div class="col-sm-8">
-								<input type="text" id="" name="productName" class="addInputs"
+								<input type="text" id="productName" name="productName" class="addInputs"
 									placeholder="Enter admin" required><br /> <br />
 							</div>
 							<div class="col-sm-4">
@@ -182,17 +190,28 @@ function confirmDelete(){
 								<lable>Catagory Name : <span>*</span></lable>
 							</div>
 							<div class="col-sm-9">
-								<input type="text" id="uname" name="categoryName"
-									class="addInputs" required><br /> <br />
+								<input type="text" id="editCategoryName" name="categoryName"
+									class="addInputs" value="${categoryName}" readonly="readonly"><br />
+								<br />
 							</div>
 							<div class="col-sm-3">
 								<lable>Description:<span>*</span> </lable>
 							</div>
+							<jstl:forEach items="${category}" var="category">
+								<%-- 								<a href="category.ado?categoryName=${category.categoryName}">${category.categoryName}</a>
+								<br /> --%>
+								<jstl:if test="${category.categoryName}=='${categoryName}'">
+
+								</jstl:if>
+							</jstl:forEach>
 							<div class="col-sm-9">
-								<textarea rows="5" cols="255" maxlength="50"
-									name="categoryDescription" required="required">
-							</textarea>
+								<textarea id="editCategoryDescription" rows="5"
+									maxlength="50000" name="categoryDescription"
+									required="required">${categoryDescription}
+								</textarea>
 							</div>
+
+
 						</div>
 
 						<div class="modal-footer">
@@ -224,8 +243,8 @@ function confirmDelete(){
 							</div> -->
 							<div class="col-sm-8">
 								<select name="categoryName">
-									<jstl:forEach items="${category}" var="categoryName">
-										<option value="${categoryName}">${categoryName}</option>
+									<jstl:forEach items="${category}" var="categoryN">
+										<option value="${categoryN.categoryName}">${categoryN.categoryName}</option>
 									</jstl:forEach>
 								</select>
 							</div>
@@ -235,7 +254,7 @@ function confirmDelete(){
 							</div>
 							<div class="col-sm-8">
 								<input type="text" id="" name="productName" class="addInputs"
-									 required><br /> <br />
+									<%-- value="${listOfProducts.productName }" --%> readonly="readonly"><br /> <br />
 							</div>
 							<div class="col-sm-4">
 								<lable>Description:<span>*</span> </lable>
@@ -251,15 +270,14 @@ function confirmDelete(){
 							</div>
 							<div class="col-sm-8">
 								<input type="number" min="0" name="price" class="addInputs"
-									 required><br /> <br />
+									required><br /> <br />
 							</div>
 							<div class="col-sm-4">
 								<lable>In Stock : <span>*</span></lable>
 							</div>
 							<div class="col-sm-8">
 								<input type="number" id="" min="0" name="stock"
-									class="addInputs" required><br />
-								<br />
+									class="addInputs" required><br /> <br />
 							</div>
 						</div>
 

@@ -5,8 +5,8 @@
 		<div class="w3-dropdown-hover">
 			<button class="btn btn-info">Categories</button>
 			<div class="w3-dropdown-content w3-bar-block w3-border">
-				<jstl:forEach items="${category}" var="categoryName">
-					<a href="category.ado?categoryName=${categoryName}">${categoryName}</a>
+				<jstl:forEach items="${category}" var="category">
+					<a href="category.ado?categoryName=${category.categoryName}">${category.categoryName}</a>
 					<br />
 				</jstl:forEach>
 				<a href="#addCategory" data-toggle="modal"

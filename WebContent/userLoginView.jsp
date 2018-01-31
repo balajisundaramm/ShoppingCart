@@ -28,12 +28,16 @@ span {
 	color: red;
 }
 </style>
+<script>
+$('#userLoginForm')[0].reset();
+
+</script>
 </head>
 <body>
 	<div class="container">
 		<div class="row" id="header">
 			<div class="col-xs-4">
-				<button class="btn btn-info">e-Cart</button>
+				<button class="btn btn-info" onclick="location.href='home.html';">Admin Login</button>
 			</div>
 			<div class="col-xs-6 text-right">
 				<button class="btn btn-info" data-toggle="modal"
@@ -144,7 +148,7 @@ span {
 					<button type="button" class="close" data-dismiss="modal">&times;</button>
 					<h4 class="modal-title">User Login</h4>
 				</div>
-				<form id="myForm" class="modalview" action="userLoginInt.jsp" 
+				<form id="userLoginForm" class="modalview" action="userLoginInt.jsp" 
 					method="post">
 					<div class="modal-body">
 						<div class="col-sm-3">
