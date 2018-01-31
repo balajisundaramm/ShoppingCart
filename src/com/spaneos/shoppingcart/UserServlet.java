@@ -122,6 +122,46 @@ public class UserServlet extends HttpServlet {
 			rd.forward(request, response);
 			}
 		}
+		
+		if(uri.contains("/listOfProducts.udo")) {
+			HttpSession session = request.getSession(false);
+			if(session==null || session.getAttribute("user")==null) {
+				request.setAttribute("errorMsg", "First login, then add Contact!");
+				rd = request.getRequestDispatcher("Error.jsp");
+				rd.forward(request, response);
+			}
+			else {
+				List<ProductBean> products=model.fetchAllProducts();
+				if(products!=null) {
+					request.setAttribute("allProducts", products);
+					rd=request.getRequestDispatcher("userProducts.jsp");
+					rd.forward(request, response);
+				}
+				else {
+					//request.setAttribute("errorMsg", );
+					rd=request.getRequestDispatcher("home.html");
+					rd.forward(request, response);
+		 		}
+			}
+		}
+		
+		if(uri.contains("/category.udo")) {
+			HttpSession session = request.getSession(false);
+			if(session==null || session.getAttribute("user")==null) {
+				request.setAttribute("errorMsg", "First login, then add Contact!");
+				rd = request.getRequestDispatcher("Error.jsp");
+				rd.forward(request, response);
+			} 
+			else {
+				String category=request.getParameter("categoryName");
+				request.setAttribute("categoryName", category);
+				List<ProductBean> products=model.fetchProducts(category);
+				request.setAttribute("listOfProducts", products);
+				rd=request.getRequestDispatcher("userCategories.jsp");
+				rd.forward(request, response);
+				
+			}
+		}
 	}
 
 }

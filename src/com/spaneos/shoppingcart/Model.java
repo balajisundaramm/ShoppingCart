@@ -462,4 +462,46 @@ public class Model {
 		}
 	}
 	
+	public List<ProductBean> fetchAllProducts(){
+		Connection con = null;
+		PreparedStatement ps_sql = null;
+		ResultSet rs = null;
+		List<ProductBean> products=new ArrayList<ProductBean>();
+		try {
+			con = JDBCHelper.getConnection();
+			if (con == null) {
+				throw new RuntimeException("Cannot connct to DB. Contact admin.");
+			} else {
+				ps_sql = con.prepareStatement("select * from Products");
+				ps_sql.execute();
+				rs = ps_sql.getResultSet();
+				while(rs.next()) {
+					String name=rs.getString("Name");
+					int price=rs.getInt("Price");
+					int stock=rs.getInt("InStock");
+					String categoryName=rs.getString("CategoryName");
+					String description=rs.getString("Description");
+					LOG.info("product name "+name);
+					LOG.info("product price"+price);
+					LOG.info("product in stock"+stock);
+					ProductBean product=new ProductBean();
+					product.setProductName(name);
+					product.setDescription(description);
+					product.setPrice(price);
+					product.setStock(stock);
+					product.setCategoryName(categoryName);
+					products.add(product);
+					LOG.info("Products in modal "+products);
+
+				}
+				return products;
+			}
+		}
+		catch (SQLException e) {
+			e.printStackTrace();
+			return null;
+		}
+
+	}
+	
 }

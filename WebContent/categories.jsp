@@ -21,14 +21,13 @@ body {
 	background-repeat: no-repeat;
 	background-size: 100%;
 }
-
 input, textarea {
 	width: 100%;
 }
 </style>
 <script>
 	$(document).ready(function() {
-		$(".edit").on('click', function () {
+		$(".editProduct").on('click', function () {
 			$('#editProduct').modal('show');
 		});
 	});
@@ -280,7 +279,6 @@ input, textarea {
 									class="addInputs" required><br /> <br />
 							</div>
 						</div>
-
 						<div class="modal-footer">
 							<button type="submit" id="" class="btn btn-info">Save</button>
 							<button type="reset" id="clear" class="btn btn-danger">Clear</button>

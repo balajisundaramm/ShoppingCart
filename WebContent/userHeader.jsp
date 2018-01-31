@@ -7,7 +7,7 @@
 				<button class="btn btn-info">Categories</button>
 				<div class="w3-dropdown-content w3-bar-block w3-border">
 					<jstl:forEach items="${category}" var="category">
-						<a href="category.ado?categoryName=${category.categoryName}">${category.categoryName}</a>
+						<a href="category.udo?categoryName=${category.categoryName}">${category.categoryName}</a>
 						<br />
 					</jstl:forEach>
 				</div>
@@ -18,7 +18,7 @@
 	</div>
 	<div class="col-sm-offset-3">
 		<button class="btn btn-info"
-			onclick="location.href='listOfUsers.ado';">Products</button>
+			onclick="location.href='listOfProducts.udo';">Products</button>
 	</div>
 	<div class="col-sm-offset-5">
 
