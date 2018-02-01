@@ -132,7 +132,7 @@ $('#userLoginForm')[0].reset();
 						</div>
 					</div>
 					<div class="modal-footer">
-						<button type="submit" id="userReg" class="btn btn-info">Login</button>
+						<button type="submit" id="userReg" class="btn btn-info">Register</button>
 						<button type="reset" id="clear" class="btn btn-danger">Clear</button>
 					</div>
 				</form>

@@ -60,12 +60,12 @@ public class AdminServlet extends HttpServlet {
 		/**
 		 * Forwarding the control from home page to admin login page.
 		 */
-		
+
 		List<CategoryBean> categories=model.getCategories();
 		LOG.info("Category bean "+categories);
 		request.setAttribute("category",categories);
-		
-		
+
+
 		/**
 		 * 
 		 */
@@ -84,8 +84,8 @@ public class AdminServlet extends HttpServlet {
 				rd.forward(request, response);
 			}
 			else {
-			rd=request.getRequestDispatcher("adminHome.jsp");
-			rd.forward(request, response);
+				rd=request.getRequestDispatcher("adminHome.jsp");
+				rd.forward(request, response);
 			}
 		}
 		/**
@@ -104,7 +104,7 @@ public class AdminServlet extends HttpServlet {
 				// Registration succeeded
 				// forward to Menu.jsp
 				request.setAttribute("message", "You have loggedin successfully!!! ");
-				
+
 				rd=request.getRequestDispatcher("adminHome.jsp");
 				rd.forward(request, response);
 			}
@@ -146,6 +146,35 @@ public class AdminServlet extends HttpServlet {
 				}
 			}
 		} 
+		
+		if(uri.contains("updateCategory.ado")) {
+			HttpSession session = request.getSession(false);
+			if(session==null || session.getAttribute("admin")==null) {
+				request.setAttribute("errorMsg", "First login, then add Contact!");
+				rd = request.getRequestDispatcher("Error.jsp");
+				rd.forward(request, response);
+			}
+			else {
+				CategoryBean bean=(CategoryBean) request.getAttribute("editCategory");
+				LOG.info("Category "+bean);
+				String result=model.updateCategory(bean);
+				if(result.equals(Constants.SUCCESS)) {
+					// Registration succeeded
+					// forward to Menu.jsp
+					request.setAttribute("message", "Category has been added successfully!!!");
+					categories=model.getCategories();
+					request.setAttribute("category",categories);
+					rd=request.getRequestDispatcher("adminHome.jsp");
+					rd.forward(request, response);
+				}
+				else {
+					// Login failed
+					request.setAttribute("errorMsg", result);
+					rd=request.getRequestDispatcher("home.html");
+					rd.forward(request, response);
+				}
+			}
+		} 
 		/**
 		 * 
 		 */
@@ -157,7 +186,7 @@ public class AdminServlet extends HttpServlet {
 				rd.forward(request, response);
 			}
 			else {
-		 		List<UserBean> users=model.fetchusers();
+				List<UserBean> users=model.fetchUsers();
 				if(users!=null) {
 					request.setAttribute("userDetails", users);
 					rd=request.getRequestDispatcher("users.jsp");
@@ -167,9 +196,9 @@ public class AdminServlet extends HttpServlet {
 					//request.setAttribute("errorMsg", );
 					rd=request.getRequestDispatcher("home.html");
 					rd.forward(request, response);
-		 		}
+				}
 			} 
-			 
+
 		}
 		/**
 		 * 
@@ -187,7 +216,7 @@ public class AdminServlet extends HttpServlet {
 				String result=model.deleteUser(email);
 				if(result.equals(Constants.SUCCESS)) {
 					request.setAttribute("msg", "User has been deleted Successfully!!!");
-					List<UserBean> users=model.fetchusers();
+					List<UserBean> users=model.fetchUsers();
 					if(users!=null) {
 						request.setAttribute("userDetails", users);
 						rd=request.getRequestDispatcher("users.jsp");
@@ -197,69 +226,8 @@ public class AdminServlet extends HttpServlet {
 						//request.setAttribute("errorMsg", );
 						rd=request.getRequestDispatcher("home.html");
 						rd.forward(request, response);
-			 		}
-				}
-				else {
-					// Login failed
-					request.setAttribute("errorMsg", result);
-					rd=request.getRequestDispatcher("home.html");
-					rd.forward(request, response);
-				}
-			}
-		}
-		
-		/**
-		 * 
-		 */
-		if(uri.contains("/category.ado")) {
-			HttpSession session = request.getSession(false);
-			if(session==null || session.getAttribute("admin")==null) {
-				request.setAttribute("errorMsg", "First login, then add Contact!");
-				rd = request.getRequestDispatcher("Error.jsp");
-				rd.forward(request, response);
-			} 
-			else {
-				String category=request.getParameter("categoryName");
-				request.setAttribute("categoryName", category);
-				for (CategoryBean categoryBean : categories) {
-					if(categoryBean.getCategoryName().equals(category)) {
-						request.setAttribute("categoryDescription", 
-								categoryBean.getCategoryDescription());
 					}
 				}
-				List<ProductBean> products=model.fetchProducts(category);
-				request.setAttribute("listOfProducts", products);
-				//List<ProductBean> specificProduct=model.fetchSpecificProduct(productName);
-				rd=request.getRequestDispatcher("categories.jsp");
-				rd.forward(request, response);
-				
-			}
-		}
-		/**
-		 * 
-		 */
-		if(uri.contains("/addProduct.ado")) {
-			HttpSession session = request.getSession(false);
-			if(session==null || session.getAttribute("admin")==null) {
-				request.setAttribute("errorMsg", "First login, then add Contact!");
-				rd = request.getRequestDispatcher("Error.jsp");
-				rd.forward(request, response);
-			}
-			else {
-				ProductBean bean= (ProductBean) request.getAttribute("addProduct");
-				LOG.info("Product bean "+bean);
-				String result=model.addProduct(bean);
-				if(result.equals(Constants.SUCCESS)) {
-					// Registration succeeded
-					// forward to Menu.jsp
-					request.setAttribute("message", "Category has been added successfully!!!");
-					String category=request.getParameter("categoryName");
-					List<ProductBean> products=model.fetchProducts(category);
-					request.setAttribute("listOfProducts", products);
-					request.setAttribute("categoryName", category);
-					rd=request.getRequestDispatcher("categories.jsp");
-					rd.forward(request, response);
-				}
 				else {
 					// Login failed
 					request.setAttribute("errorMsg", result);
@@ -268,65 +236,8 @@ public class AdminServlet extends HttpServlet {
 				}
 			}
 		}
-		
-		if(uri.contains("editProduct.ado")) {
-			HttpSession session = request.getSession(false);
-			if(session==null || session.getAttribute("admin")==null) {
-				request.setAttribute("errorMsg", "First login, then add Contact!");
-				rd = request.getRequestDispatcher("Error.jsp");
-				rd.forward(request, response);
-			}
-			else {
-				String productName=request.getParameter("productName");
-				String categoryName=request.getParameter("categoryName");
-				LOG.info("productName in delete product "+productName);
-				LOG.info("categoryName in delete product "+categoryName);
-				List<ProductBean> products=model.fetchProducts(categoryName);
-				request.setAttribute("listOfProducts", products);
-				List<ProductBean> specificProduct=model.fetchSpecificProduct(productName);
-				//List<JSONObject> specificProduct=model.fetchJsonProduct(productName);
-				request.setAttribute("categoryName", categoryName);
-				request.setAttribute("specificProduct", specificProduct);
-				rd=request.getRequestDispatcher("categories.jsp");
-				rd.forward(request, response);
-			}
-		}
-		/*
-		 * 
-		 */ 
-		if(uri.contains("/deleteProduct.ado")) {
-			HttpSession session = request.getSession(false);
-			if(session==null || session.getAttribute("admin")==null) {
-				request.setAttribute("errorMsg", "First login, then add Contact!");
-				rd = request.getRequestDispatcher("Error.jsp");
-				rd.forward(request, response);
-			}
-			else {
-				String productName=request.getParameter("productName");
-				String categoryName=request.getParameter("categoryName");
-				LOG.info("productName in delete product "+productName);
-				LOG.info("categoryName in delete product "+categoryName);
-				String result=model.deleteProduct(productName);
-				if(result.equals(Constants.SUCCESS)) {
-					request.setAttribute("msg", "Product has been deleted Successfully!!!");
-					List<ProductBean> products=model.fetchProducts(categoryName);
-						request.setAttribute("listOfProducts", products);
-						request.setAttribute("categoryName", categoryName);
-						rd=request.getRequestDispatcher("categories.jsp");
-						rd.forward(request, response);
-				}
-				else {
-					// Login failed
-					request.setAttribute("errorMsg", result);
-					rd=request.getRequestDispatcher("categories.jsp");
-					rd.forward(request, response);
-				}
-			}
-		}
-		/*
-		 * 
-		 */
-		if(uri.contains("/deleteCategory.ado")) {
+
+		if(uri.contains("editUser.ado")) {
 			LOG.info("URI "+uri);
 			HttpSession session = request.getSession(false);
 			if(session==null || session.getAttribute("admin")==null) {
@@ -335,40 +246,257 @@ public class AdminServlet extends HttpServlet {
 				rd.forward(request, response);
 			}
 			else {
-				String categoryName=request.getParameter("categoryName");
-				LOG.info("categoryName in delete category "+categoryName);
-				String result=model.deleteCategory(categoryName);
-				if(result.equals(Constants.SUCCESS)) {
-					request.setAttribute("message", "Category has been deleted Successfully!!!");
-					categories=model.getCategories();
-					request.setAttribute("category", categories);
-					rd=request.getRequestDispatcher("adminHome.jsp");
+				String email=request.getParameter("userEmail");
+				List<UserBean> users=model.fetchUsers();
+				List<UserRegistrationBean> specificUser=model.fetchSpecificUser(email);
+				if(specificUser!=null) {
+					request.setAttribute("userDetails", users);
+					for (UserRegistrationBean userBean : specificUser) {
+						request.setAttribute("specificUser", userBean);
+						rd=request.getRequestDispatcher("editUser.jsp");
+						rd.forward(request, response);
+					} 
+				}
+				else {
+					//request.setAttribute("errorMsg", );
+					LOG.info("Login failed");
+					rd=request.getRequestDispatcher("home.html");
 					rd.forward(request, response);
 				} 
-				else { 
-					// Login failed
+			}
+		}
+
+	/**
+	 * 
+	 */
+	if(uri.contains("/category.ado")) {
+		HttpSession session = request.getSession(false);
+		if(session==null || session.getAttribute("admin")==null) {
+			request.setAttribute("errorMsg", "First login, then add Contact!");
+			rd = request.getRequestDispatcher("Error.jsp");
+			rd.forward(request, response);
+		} 
+		else {
+			String category=request.getParameter("categoryName");
+			request.setAttribute("categoryName", category);
+			for (CategoryBean categoryBean : categories) {
+				if(categoryBean.getCategoryName().equals(category)) {
+					request.setAttribute("categoryDescription", 
+							categoryBean.getCategoryDescription());
+				}
+			}
+			List<ProductBean> products=model.fetchProducts(category);
+			request.setAttribute("listOfProducts", products);
+			//List<ProductBean> specificProduct=model.fetchSpecificProduct(productName);
+			rd=request.getRequestDispatcher("categories.jsp");
+			rd.forward(request, response);
+
+		}
+	}
+	/**
+	 * 
+	 */
+	if(uri.contains("/addProduct.ado")) {
+		HttpSession session = request.getSession(false);
+		if(session==null || session.getAttribute("admin")==null) {
+			request.setAttribute("errorMsg", "First login, then add Contact!");
+			rd = request.getRequestDispatcher("Error.jsp");
+			rd.forward(request, response);
+		}
+		else {
+			ProductBean bean= (ProductBean) request.getAttribute("addProduct");
+			LOG.info("Product bean "+bean);
+			String result=model.addProduct(bean);
+			if(result.equals(Constants.SUCCESS)) {
+				// Registration succeeded
+				// forward to Menu.jsp
+				request.setAttribute("message", "Category has been added successfully!!!");
+				String category=request.getParameter("categoryName");
+				List<ProductBean> products=model.fetchProducts(category);
+				request.setAttribute("listOfProducts", products);
+				request.setAttribute("categoryName", category);
+				rd=request.getRequestDispatcher("categories.jsp");
+				rd.forward(request, response);
+			}
+			else {
+				// Login failed
+				request.setAttribute("errorMsg", result);
+				rd=request.getRequestDispatcher("home.html");
+				rd.forward(request, response);
+			}
+		}
+	}
+	
+	if(uri.contains("/updateProductDB.ado")) {
+		HttpSession session = request.getSession(false);
+		if(session==null || session.getAttribute("admin")==null) {
+			request.setAttribute("errorMsg", "First login, then add Contact!");
+			rd = request.getRequestDispatcher("Error.jsp");
+			rd.forward(request, response);
+		}
+		else {
+			ProductBean bean= (ProductBean) request.getAttribute("editProduct");
+			LOG.info("Product bean "+bean);
+			String result=model.updateProduct(bean);
+			if(result.equals(Constants.SUCCESS)) {
+				// Registration succeeded
+				// forward to Menu.jsp
+				request.setAttribute("message", "Product has been updated successfully!!!");
+				String category=request.getParameter("categoryName");
+				List<ProductBean> products=model.fetchProducts(category);
+				request.setAttribute("listOfProducts", products);
+				request.setAttribute("categoryName", category);
+				rd=request.getRequestDispatcher("categories.jsp");
+				rd.forward(request, response);
+			}
+			else {
+				// Login failed
+				request.setAttribute("errorMsg", result);
+				rd=request.getRequestDispatcher("home.html");
+				rd.forward(request, response);
+			}
+		}
+	}
+
+	if(uri.contains("editProduct.ado")) {
+		HttpSession session = request.getSession(false);
+		if(session==null || session.getAttribute("admin")==null) {
+			request.setAttribute("errorMsg", "First login, then add Contact!");
+			rd = request.getRequestDispatcher("Error.jsp");
+			rd.forward(request, response);
+		}
+		else {
+			String productName=request.getParameter("productName");
+			String categoryName=request.getParameter("categoryName");
+			LOG.info("productName in delete product "+productName);
+			LOG.info("categoryName in delete product "+categoryName);
+			List<ProductBean> products=model.fetchProducts(categoryName);
+			request.setAttribute("listOfProducts", products);
+			List<ProductBean> specificProduct=model.fetchSpecificProduct(productName);
+			//List<JSONObject> specificProduct=model.fetchJsonProduct(productName);
+			request.setAttribute("categoryName", categoryName);
+			for (ProductBean productBean : specificProduct) {
+				request.setAttribute("specificProduct", productBean);
+			}
+			request.setAttribute("pName", productName);
+			//request.setAttribute("specificProduct", specificProduct);
+			rd=request.getRequestDispatcher("editedProduct.jsp");
+			rd.forward(request, response);
+		}
+	} 
+	/*
+	 * 
+	 */ 
+	if(uri.contains("/deleteProduct.ado")) {
+		HttpSession session = request.getSession(false);
+		if(session==null || session.getAttribute("admin")==null) {
+			request.setAttribute("errorMsg", "First login, then add Contact!");
+			rd = request.getRequestDispatcher("Error.jsp");
+			rd.forward(request, response);
+		}
+		else {
+			String productName=request.getParameter("productName");
+			String categoryName=request.getParameter("categoryName");
+			LOG.info("productName in delete product "+productName);
+			LOG.info("categoryName in delete product "+categoryName);
+			String result=model.deleteProduct(productName);
+			if(result.equals(Constants.SUCCESS)) {
+				request.setAttribute("msg", "Product has been deleted Successfully!!!");
+				List<ProductBean> products=model.fetchProducts(categoryName);
+				request.setAttribute("listOfProducts", products);
+				request.setAttribute("categoryName", categoryName);
+				rd=request.getRequestDispatcher("categories.jsp");
+				rd.forward(request, response);
+			}
+			else {
+				// Login failed
+				request.setAttribute("errorMsg", result);
+				rd=request.getRequestDispatcher("categories.jsp");
+				rd.forward(request, response);
+			}
+		}
+	}
+	/*
+	 * 
+	 */
+	if(uri.contains("/deleteCategory.ado")) {
+		LOG.info("URI "+uri);
+		HttpSession session = request.getSession(false);
+		if(session==null || session.getAttribute("admin")==null) {
+			request.setAttribute("errorMsg", "First login, then add Contact!");
+			rd = request.getRequestDispatcher("Error.jsp");
+			rd.forward(request, response);
+		}
+		else {
+			String categoryName=request.getParameter("categoryName");
+			LOG.info("categoryName in delete category "+categoryName);
+			String result=model.deleteCategory(categoryName);
+			if(result.equals(Constants.SUCCESS)) {
+				request.setAttribute("message", "Category has been deleted Successfully!!!");
+				categories=model.getCategories();
+				request.setAttribute("category", categories);
+				rd=request.getRequestDispatcher("adminHome.jsp");
+				rd.forward(request, response);
+			} 
+			else { 
+				// Login failed
+				request.setAttribute("errorMsg", result);
+				rd=request.getRequestDispatcher("home.html");
+				rd.forward(request, response);
+			}
+		}
+	}
+	
+	if(uri.contains("/updateUserDB.ado")) {
+		HttpSession session = request.getSession(false);
+		if(session==null || session.getAttribute("admin")==null) {
+			request.setAttribute("errorMsg", "First login, then add Contact!");
+			rd = request.getRequestDispatcher("Error.jsp");
+			rd.forward(request, response);
+		}
+		else {
+			UserRegistrationBean bean=(UserRegistrationBean) request.getAttribute("editUser");
+			LOG.info("Registeration bean "+bean);
+			String result=model.updateUser(bean);
+			LOG.info(result);
+			if(result.equals(Constants.SUCCESS)) {
+				request.setAttribute("message", "User Details updated Successfull!!! ");
+				List<UserBean> users=model.fetchUsers();
+				if(users!=null) {
+					request.setAttribute("userDetails", users);
+					rd=request.getRequestDispatcher("users.jsp");
+					rd.forward(request, response);
+				}
+				else {
 					request.setAttribute("errorMsg", result);
 					rd=request.getRequestDispatcher("home.html");
 					rd.forward(request, response);
 				}
 			}
-		}
-		
-		/*
-		 *  
-		 */
-		if(uri.contains("/logout.ado")) {
-			//invalidate the session
-			LOG.info("In logout uri "+uri);
-			HttpSession session = request.getSession(false);
-			if(session!=null)
-			{
-				session.removeAttribute("admin");
-				session.invalidate();
+			else {
+				// Login failed
+				request.setAttribute("errorMsg", result);
+				rd=request.getRequestDispatcher("home.html");
+				rd.forward(request, response);
 			}
-			rd = request.getRequestDispatcher("home.html");
-			request.setAttribute("message","You have logged out successfully! Click <a href='HomePage.jsp'>Click to go back to HomePage</a>");
-			rd.forward(request, response);
-		}		
+		}
 	}
+
+	/*
+	 *  
+	 */
+	if(uri.contains("/logout.ado")) {
+		//invalidate the session
+		LOG.info("In logout uri "+uri);
+		HttpSession session = request.getSession(false);
+		if(session!=null)
+		{
+			session.removeAttribute("admin");
+			session.invalidate();
+		}
+		rd = request.getRequestDispatcher("home.html");
+		request.setAttribute("message","You have logged out successfully! Click <a href='HomePage.jsp'>Click to go back to HomePage</a>");
+		rd.forward(request, response);
+	}		
+}
 }

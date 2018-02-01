@@ -12,7 +12,8 @@
 	src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 <script
 	src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-	
+<script
+	src="//cdnjs.cloudflare.com/ajax/libs/jquery-form-validator/2.3.26/jquery.form-validator.min.js"></script>
 <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
 <style>
 body {
@@ -27,26 +28,28 @@ input {
 }
 </style>
 <script type="text/javascript">
-$(window).on('load', function() {
-	$('#adminLogin').modal('show');
-});
- $('document').ready(function() {
-	/* $('#myForm').submit(function(e) {
-        e.preventDefault();
-		var name=$('#uname').val();
-		var pass=$('#upass').val();
-		var valid=true;
-		if(!(name.equals(admin)) && (!(pass.equals(admin123)))){
-			valid=false
-			$('#error').html('Choose different destination')
+	$(window).on('load', function() {
+		$('#adminLogin').modal('show');
+	});
+	$('document').ready(function() {
+		$.validate({
+			  form : '#adminLogin'
+			});
+		/* $('#myForm').submit(function(e) {
+		    e.preventDefault();
+			var name=$('#uname').val();
+			var pass=$('#upass').val();
+			var valid=true;
+			if(!(name.equals(admin)) && (!(pass.equals(admin123)))){
+				valid=false
+				$('#error').html('Choose different destination')
+			}
+			else 
+		        $('#error').html('');
 		}
-		else 
-            $('#error').html('');
-	}
-	if(valid)
-        $('#myForm').submit(); */
-}); 
-	
+		if(valid)
+		    $('#myForm').submit(); */
+	});
 </script>
 </head>
 <body>
@@ -68,23 +71,30 @@ $(window).on('load', function() {
 						<button type="button" class="close" data-dismiss="modal">&times;</button>
 						<h4 class="modal-title">Admin Login</h4>
 					</div>
-					<form id="myForm" class="modalview" action="adminLoginInt.jsp" method="post">
+					<form id="myForm" class="modalview" action="adminLoginInt.jsp"
+						method="post">
 						<div class="modal-body">
-							<div class="col-sm-3">
-								<lable>User name:*</lable>
+							<div class="col-sm-3" id="email-error-dialog">
+								<lable>User name : (admin)</lable>
 							</div>
 							<div class="col-sm-9">
-								<input type="text" id="uname" name="adminUserName"
-									class="addInputs" placeholder="Enter admin" required><br />
+								<input type="text" pattern="^(admin)$" id="uname" name="adminUserName"
+									class="addInputs" required
+									data-validation="required pattern"
+									data-validation-error-msg-required="User name cannot be empty"
+									data-validation-error-msg-pattern ="Enter admin" /><br />
 								<br />
 							</div>
-							<div class="col-sm-3">
-								<lable>Password:* </lable>
+							<div class="col-sm-3" id="email-error-dialog">
+								<lable>Password: (admin123)</lable>
 							</div>
 							<div class="col-sm-9">
-								<input type="password" class="addInputs" id="upass"
-									name="adminPassword" placeholder="Enter admin123"
-									required><br /> <br />
+								<input type="password" pattern="^(admin123)$" class="addInputs" id="upass"
+									name="adminPassword" placeholder="Enter admin123" required
+									data-validation="required pattern"
+									data-validation-error-msg-required="Password cannot be empty"
+									data-validation-error-msg-pattern ="Enter admin123"><br />
+								<br />
 							</div>
 						</div>
 						<div class="modal-footer">

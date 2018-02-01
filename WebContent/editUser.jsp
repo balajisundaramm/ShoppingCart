@@ -27,7 +27,9 @@ input, textarea {
 }
 </style>
 <script>
-	$('document')
+$(window).on('load', function() {
+	$('#editUser').modal('show');
+});
 </script>
 </head>
 <body>

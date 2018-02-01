@@ -7,6 +7,8 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.management.RuntimeErrorException;
+
 import org.apache.log4j.Logger;
 //import org.json.JSONException;
 //import org.json.JSONObject;
@@ -53,7 +55,11 @@ public class Model {
 			return "Oops something went wrong!" + e.getMessage();
 		}
 	}
-
+	/**
+	 * 
+	 * @param bean
+	 * @return
+	 */
 	public String addCategory(CategoryBean bean) {
 		Connection con=null;
 		PreparedStatement ps_sql=null, ps_ins=null;
@@ -68,6 +74,29 @@ public class Model {
 				ps_ins.setString(1, bean.getCategoryName());
 				ps_ins.setString(2, bean.getCategoryDescription());
 				ps_ins.execute();	
+				return "SUCCESS";		
+			}
+		}
+		catch (SQLException e) {
+			e.printStackTrace();
+			return "Oops something went wrong!"+e.getMessage();
+		}
+
+	}
+	
+	public String updateCategory(CategoryBean bean) {
+		Connection con=null;
+		PreparedStatement ps_up=null;						
+		try {
+			con=JDBCHelper.getConnection();
+			if(con==null) {
+				throw new RuntimeException("Cannot connect to DB.");
+			}
+			else {
+				ps_up=con.prepareStatement("UPDATE Categories SET CategoryDescription=? WHERE CategoryName=?");
+				ps_up.setString(1, bean.getCategoryDescription());
+				ps_up.setString(2, bean.getCategoryName());
+				ps_up.execute();	
 				return "SUCCESS";		
 			}
 		}
@@ -143,6 +172,34 @@ public class Model {
 		}
 	}
 
+	public String updateUser(UserRegistrationBean bean) {
+		Connection con=null;
+		PreparedStatement ps_up=null;				
+		try {
+			con=JDBCHelper.getConnection();
+			if(con==null) {
+				throw new RuntimeException("Cannot connect to DB.");
+			}
+			else {
+				ps_up=con.prepareStatement("UPDATE Users SET Name=?, Mobile=?, Password=?, Gender=?, Address=?, DOB=? WHERE Email=?");
+				ps_up.setString(1, bean.getUserName());
+				ps_up.setString(2, bean.getUserMobile());
+				ps_up.setString(3, bean.getUserPassword());
+				ps_up.setString(4, bean.getUserGender());
+				ps_up.setString(5, bean.getUserAddress());
+				ps_up.setString(6, bean.getUserDob());
+				ps_up.setString(7, bean.getUserEmail());
+				ps_up.execute();	
+				return Constants.SUCCESS;
+			}
+		}
+		catch (SQLException e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+	
+	
 	public String userLogin(UserLoginBean bean) {
 		Connection con = null;
 		PreparedStatement ps_sql = null, ps_ins = null;
@@ -172,7 +229,7 @@ public class Model {
 
 	}
 
-	public List<UserBean> fetchusers(){
+	public List<UserBean> fetchUsers(){
 		Connection con = null;
 		PreparedStatement ps_sql = null, ps_ins = null;
 		ResultSet rs = null;
@@ -196,6 +253,49 @@ public class Model {
 					users.add(user);
 				}
 				return users;
+			}
+		}
+		catch (SQLException e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+	
+	
+	public List<UserRegistrationBean> fetchSpecificUser(String requestEmail){
+		Connection con = null;
+		PreparedStatement ps_sql = null, ps_ins = null;
+		ResultSet rs = null;
+		List<UserRegistrationBean> specificUser=new ArrayList<UserRegistrationBean>();
+		try {
+			con = JDBCHelper.getConnection();
+			if (con == null) {
+				return null;
+			} else {
+				ps_sql = con.prepareStatement("select * from Users where Email=?");
+				ps_sql.setString(1, requestEmail);
+				ps_sql.execute();
+				rs = ps_sql.getResultSet();
+				while(rs.next()) {
+					String name=rs.getString("Name");
+					String email=rs.getString("Email");
+					String mobile=rs.getString("Mobile");
+					String password=rs.getString("Password");
+					String gender=rs.getString("Gender");
+					String address=rs.getString("Address");
+					String dob=rs.getString("DOB");
+					UserRegistrationBean bean=new UserRegistrationBean();
+					bean.setUserName(name);
+					bean.setUserEmail(email);
+					bean.setUserPassword(password);
+					bean.setUserMobile(mobile);
+					bean.setUserAddress(address);
+					bean.setUserGender(gender);
+					bean.setUserDob(dob);
+					LOG.info("Specific user bean "+bean);
+					specificUser.add(bean);
+				}
+				return specificUser;
 			}
 		}
 		catch (SQLException e) {
@@ -260,6 +360,33 @@ public class Model {
 		}
 
 	}
+	
+	
+	public String updateProduct(ProductBean bean) {
+		Connection con=null;
+		PreparedStatement ps_up=null;
+		try {
+			con=JDBCHelper.getConnection();
+			if(con==null) {
+				throw new RuntimeException("Cannot connect to DB. Contact admin.");
+			}
+			else {
+				ps_up=con.prepareStatement("Update Products SET CategoryName=?,Description=?,Price=?,InStock=? Where Name=?");
+				ps_up.setString(1, bean.getCategoryName());
+				ps_up.setString(2, bean.getDescription());
+				ps_up.setInt(3, bean.getPrice());
+				ps_up.setInt(4, bean.getStock());
+				ps_up.setString(5, bean.getProductName());
+				ps_up.execute();	
+				return "SUCCESS";		
+			}
+		}
+		catch (SQLException e) {
+			e.printStackTrace();
+			return "Oops something went wrong!"+e.getMessage();
+		}
+
+	}
 	/**
 	 * 
 	 * @param categoryName
@@ -306,7 +433,7 @@ public class Model {
 	}
 	
 	public List<ProductBean> fetchSpecificProduct(String productName){
-		LOG.info("Modal category name"+productName);
+		LOG.info("Modal product name"+productName);
 		Connection con = null;
 		PreparedStatement ps_sql = null, ps_ins = null;
 		ResultSet rs = null;
@@ -351,58 +478,7 @@ public class Model {
 		}
 	}
 	
-	/*public List<JSONObject> fetchJsonProduct(String productName){
-		LOG.info("Modal category name"+productName);
-		Connection con = null;
-		PreparedStatement ps_sql = null, ps_ins = null;
-		ResultSet rs = null;
-		List<JSONObject> products=new ArrayList<JSONObject>();
-		try {
-			con = JDBCHelper.getConnection();
-			if (con == null) {
-				throw new RuntimeException("Cannot connct to DB. Contact admin.");
-			} else {
-				ps_sql = con.prepareStatement("select * from Products where Name=?");
-				ps_sql.setString(1, productName);
-				ps_sql.execute();
-				rs = ps_sql.getResultSet();
-				while(rs.next()) {
-					String name=rs.getString("Name");
-					String description=rs.getString("Description");
-					String categoryName=rs.getString("CategoryName");
-					int price=rs.getInt("Price");
-					int stock=rs.getInt("InStock");
-					LOG.info("product name "+name);
-					LOG.info("product price"+price);
-					LOG.info("product in stock"+stock);
-					LOG.info("product in description"+description);
-					JSONObject item = new JSONObject();
-					
-						item.put("productName", name);
-						item.put("productDescription", description);
-						item.put("productPrice", price);
-						item.put("productStock", stock);
-						item.put("categoryNam", categoryName);
-
-					
-
-					LOG.info("Products in modal "+products);
-
-				}
-				return products;
-			}
-		}
-		catch (SQLException e) {
-			e.printStackTrace();
-			return null;
-		} catch (JSONException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			return null;
-		}
-	}
 	
-*/	
 	
 	/**
 	 * 

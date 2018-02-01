@@ -19,7 +19,7 @@
 		onclick="location.href='logout.ado';">Logout</button>
 	</div>
 </div>
-<!-- Login modal  -->
+<!-- add category modal  -->
 <div class="modal fade" id="addCategory" role="dialog">
 	<div class="modal-dialog">
 		<div class="modal-content">
@@ -33,16 +33,19 @@
 					<div class="col-sm-3">
 						<lable>Catagory Name : <span>*</span></lable>
 					</div>
-					<div class="col-sm-9">
+					<div class="col-sm-9" id="email-error-dialog">
 						<input type="text" id="" name="categoryName"
-							class="addInputs" placeholder="Enter admin" required><br />
+							class="addInputs" placeholder="Enter admin" required
+							data-validation="required alphanumeric"
+  							data-validation-error-msg-required="You must enter a user name"
+  							data-validation-error-msg-alphanumeric="User name may only contain alphanumeric characters"/><br />
 						<br />
 					</div>
 					<div class="col-sm-3">
 						<lable>Description:<span>*</span> </lable>
 					</div>
 					<div class="col-sm-9">
-						<textarea rows="5" cols="255" maxlength="50"
+						<textarea rows="5" id="text" onclick='value=""' cols="255" maxlength="50"
 							placeholder="Description" name="categoryDescription" required="required">
 							</textarea>
 					</div>

@@ -27,7 +27,9 @@ input, textarea {
 }
 </style>
 <script>
-	
+$(window).on('load', function() {
+	$('#editProduct').modal('show');
+});
 </script>
 </head>
 <body>
@@ -217,6 +219,7 @@ input, textarea {
 				</div>
 			</div>
 		</div>
+		
 		<!-- Modal for edit Product details  -->
 		<div class="modal fade" id="editProduct" role="dialog">
 			<div class="modal-dialog">
@@ -231,11 +234,6 @@ input, textarea {
 							<div class="col-sm-4">
 								<lable>Catagory Name : <span>*</span></lable>
 							</div>
-							<!-- <div class="col-sm-8">
-								<input type="text" id="uname" name="categoryName"
-									class="addInputs" placeholder="Enter admin" required><br />
-								<br />
-							</div> -->
 							<div class="col-sm-8">
 								<select name="categoryName">
 									<jstl:forEach items="${category}" var="categoryN">
@@ -243,13 +241,13 @@ input, textarea {
 									</jstl:forEach>
 								</select>
 							</div>
-							<br />
+							<br />							
 							<div class="col-sm-4">
 								<lable>Product Name : <span>*</span></lable>
 							</div>
 							<div class="col-sm-8">
 								<input type="text" id="" name="productName" class="addInputs"
-									<%-- value="${listOfProducts.productName }" --%> readonly="readonly"><br />
+									  value="${specificProduct.productName}" readonly="readonly"><br />
 								<br />
 							</div>
 							<div class="col-sm-4">
@@ -257,7 +255,7 @@ input, textarea {
 							</div>
 							<div class="col-sm-8">
 								<textarea rows="5" cols="255" maxlength="45"
-									placeholder="Description" name="description">
+									 name="description">${specificProduct.description}
 							</textarea>
 								<br />
 							</div>
@@ -266,15 +264,16 @@ input, textarea {
 							</div>
 							<div class="col-sm-8">
 								<input type="number" min="0" name="price" class="addInputs"
-									required><br /> <br />
+									value="${specificProduct.price}" required><br /> <br />
 							</div>
 							<div class="col-sm-4">
 								<lable>In Stock : <span>*</span></lable>
 							</div>
 							<div class="col-sm-8">
 								<input type="number" id="" min="0" name="stock"
-									class="addInputs" required><br /> <br />
+									value="${specificProduct.stock}" class="addInputs" required><br /> <br />
 							</div>
+							
 						</div>
 						<div class="modal-footer">
 							<button type="submit" id="" class="btn btn-info">Save</button>
