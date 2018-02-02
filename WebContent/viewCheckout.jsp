@@ -4,7 +4,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
-<title>Cart</title>
+<title>Checkout</title>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="stylesheet"
@@ -27,18 +27,7 @@ input, textarea {
 }
 </style>
 <script>
-	$(document).ready(function() {
-		var i = 0;
-		$('input[type=checkbox]').each(function() {
-			i++;
-			var name = 'product_' + i;
-			var id = 'id_' + i;
-			$(this).attr('name', name);
-			$(this).attr('id', id);
-		});
-	});
 </script>
-
 </head>
 <body>
 	<div class="container">
@@ -48,7 +37,7 @@ input, textarea {
 		<br />
 		<div>
 			<div>
-				<h4>Items in your Cart :</h4>
+				<h4>Items in your Checkout :</h4>
 			</div>
 			<form id="cart" action="showChechout.udo" method="get">
 				<table class="table" id="empTable">
@@ -58,23 +47,20 @@ input, textarea {
 					<col width="15%">
 					<col width="10%">
 					<tr>
-						<th></th>
 						<th>Products</th>
 						<th>Price</th>
 						<th>No of units</th>
 						<th>Delete</th>
 					</tr>
-					<jstl:forEach items="${cartProducts}" var="allProducts">
+					<jstl:forEach items="${checkoutList}" var="allProducts">
 						<tr>
-							<td><input id="check" type="checkbox" name="a"
-								value="${allProducts.productName}"></td>
 							<td>${allProducts.productName}</td>
 							<td>${allProducts.price}</td>
 							<td>${allProducts.quantity}</td>
 							<td><a id=""
-								href="deleteCartProduct.udo?productName=${allProducts.productName}"
+								href="deleteCheckoutProduct.udo?productName=${allProducts.productName}"
 								class="delete btn btn-primary btn-xs"
-								onclick="return confirm('Are you sure you want to delete this product from cart?');">
+								onclick="return confirm('Are you sure you want to delete this product from checkout?');">
 									<span class="glyphicon glyphicon-trash"></span>
 							</a></td>
 						</tr>
@@ -87,8 +73,7 @@ input, textarea {
 			</form>
 			<div class="col-sm-offset-10">
 				<button class="btn btn-info"
-					onclick="location.href='listOfProducts.udo';">Browse
-					Products</button>
+					onclick="location.href='showCart.udo';';">Cancel</button>
 			</div>
 		</div>
 	</div>

@@ -33,13 +33,6 @@ input, textarea {
 <script>
 	var index = 0;
 	$(document).ready(function() {
-		$('input[type=checkbox]').on('change', function() {
-			if ($(this).is(':checked')) {
-				$('#').val(null)
-				$('#return').prop('disabled', 'disabled')
-			}
-		});
-
 		var i = 0;
 
 		$('input[type=checkbox]').each(function() {
@@ -118,7 +111,7 @@ input, textarea {
 			<div>
 				<h4>Category : ${categoryName}</h4>
 			</div>
-			<form id="cart" action="addToCartDB.udo" method="get">
+			<form id="cart" action="addToCartDB.udo" method="post">
 				<table class="table" id="empTable">
 					<col width="10%">
 					<col width="45%">
@@ -140,7 +133,7 @@ input, textarea {
 							<td>${allProducts.price}</td>
 							<td>${allProducts.stock}</td>
 							<td><input type="number" min=0 max='${allProducts.stock}'
-								name="ad" id="old" size="2" disabled="disabled" /></td>
+								name="ad" id="old" size="2" required disabled="disabled" /></td>
 						</tr>
 					</jstl:forEach>
 				</table>

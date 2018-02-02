@@ -22,7 +22,7 @@
 		</div>
 		<div class="col-xs-6 text-right">
 
-			<button class="btn btn-info" onclick="location.href='viewCart.jsp';">View
+			<button class="btn btn-info" onclick="location.href='showCart.udo';">View
 				Cart</button>
 			<button class="btn btn-info" onclick="location.href='logout.ado';">Logout</button>
 		</div>

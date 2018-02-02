@@ -594,7 +594,7 @@ public class Model {
 					ps_ins.setString(1, userEmail);
 					ps_ins.setString(2, purchaseBean.getProductName());
 					for (ProductBean product : fetchSpecificProduct(purchaseBean.getProductName())) {
-						ps_ins.setInt(3, product.getPrice());
+						ps_ins.setInt(3, (product.getPrice()*purchaseBean.getQuantity()));
 					}
 					ps_ins.setInt(4, purchaseBean.getQuantity());
 					ps_ins.execute();
@@ -617,5 +617,104 @@ public class Model {
 			return "Oops something went wrong!"+e.getMessage();
 		}
 	}
+	
+	
+	public List<CartBean> fetchCartProducts(String userEmail){	
+		Connection con = null;
+		PreparedStatement ps_sql = null, ps_ins = null;
+		ResultSet rs = null;
+		List<CartBean> products=new ArrayList<CartBean>();
+		try {
+			con = JDBCHelper.getConnection();
+			if (con == null) {
+				throw new RuntimeException("Cannot connct to DB. Contact admin.");
+			} else {
+				ps_sql = con.prepareStatement("select * from Cart where UserEmail=?");
+				ps_sql.setString(1, userEmail);
+				ps_sql.execute();
+				rs = ps_sql.getResultSet();
+				while(rs.next()) {
+					String name=rs.getString("ProductName");
+					int price=rs.getInt("ProductPrice");
+					int quantity=rs.getInt("Items");
+					CartBean bean=new CartBean();
+					bean.setProductName(name);
+					bean.setPrice(price);
+					bean.setQuantity(quantity);
+					products.add(bean);
+					LOG.info("Products in modal "+products);
 
+				}
+				return products;
+			}
+		}
+		catch (SQLException e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+
+	
+	public List<CartBean> fetchSpecificCartProducts(List<String> productNames, String userEmail){	
+		Connection con = null;
+		PreparedStatement ps_sql = null;
+		ResultSet rs = null;
+		List<CartBean> products=new ArrayList<CartBean>();
+		try {
+			con = JDBCHelper.getConnection();
+			if (con == null) {
+				throw new RuntimeException("Cannot connct to DB. Contact admin.");
+			} else {
+				for (String productName : productNames) {
+					ps_sql = con.prepareStatement("select * from Cart where ProductName=? and UserEmail=?");
+					ps_sql.setString(1, productName);
+					ps_sql.setString(2, userEmail);
+					ps_sql.execute();
+					rs = ps_sql.getResultSet();
+					while(rs.next()) {
+						String name=rs.getString("ProductName");
+						int price=rs.getInt("ProductPrice");
+						int quantity=rs.getInt("Items");
+						CartBean bean=new CartBean();
+						bean.setProductName(name);
+						bean.setPrice(price);
+						bean.setQuantity(quantity);
+						products.add(bean);
+						LOG.info("Products in modal "+products);
+					}
+	
+				}
+				return products;
+			}
+		}
+		catch (SQLException e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+	
+	public String deleteCartProduct(String productName, String email) {
+		Connection con = null;
+		PreparedStatement ps_del = null;
+		try {
+			con = JDBCHelper.getConnection();
+			if (con == null) {
+				throw new RuntimeException("Cannot connect to DB. Contact admin");
+			} else {
+				ps_del = con.prepareStatement("delete from Cart where UserEmail=? and ProductName=?");
+				ps_del.setString(1, email);
+				ps_del.setString(2, productName);
+				if(ps_del.executeUpdate()==1) {
+					return Constants.SUCCESS;
+				}
+				else {
+					return "Cannot delete the Product from Cart.";
+				}
+			}
+		}
+		catch (SQLException e) {
+			e.printStackTrace();
+			return "Oops something went wrong!" + e.getMessage();
+		}
+	} 
 }

@@ -177,6 +177,31 @@ public class UserServlet extends HttpServlet {
 				rd.forward(request, response);
 			}
 		}
+		
+		if(uri.contains("/showCart.udo")) {
+			HttpSession session = request.getSession(false);
+			if(session==null || session.getAttribute("user")==null) {
+				request.setAttribute("errorMsg", "First login, then add Contact!");
+				rd = request.getRequestDispatcher("Error.jsp");
+				rd.forward(request, response);
+			}
+			else {
+				String userEmail=(String)session.getAttribute("user");
+				List<CartBean> products=model.fetchCartProducts(userEmail);
+				LOG.info("CartBean "+ products);
+				if(products!=null) {
+					request.setAttribute("cartProducts", products);
+					rd=request.getRequestDispatcher("viewCart.jsp");
+					rd.forward(request, response);
+				}
+				else {
+					//request.setAttribute("errorMsg", );
+					rd=request.getRequestDispatcher("home.html");
+					rd.forward(request, response);
+				}
+			}
+		}
+
 
 		if(uri.contains("/addToCartDB.udo")) {
 			HttpSession session = request.getSession(false);
@@ -234,9 +259,19 @@ public class UserServlet extends HttpServlet {
 				}
 				String result=model.addCart(beans, userEmail);
 				if(result.equals(Constants.SUCCESS)) {
-					request.setAttribute("message", "Registrtation Successfull!!! ");
-					rd=request.getRequestDispatcher("viewCart.jsp");
-					rd.forward(request, response);
+					request.setAttribute("message", "Product has been successfully added to Cart!!! ");
+					List<CartBean> products=model.fetchCartProducts(userEmail);
+					LOG.info("CartBean "+ products);
+					if(products!=null) {
+						request.setAttribute("cartProducts", products);
+						rd=request.getRequestDispatcher("viewCart.jsp");
+						rd.forward(request, response);
+					}
+					else {
+						//request.setAttribute("errorMsg", );
+						rd=request.getRequestDispatcher("home.html");
+						rd.forward(request, response);
+					}
 				}
 				else {
 					// Login failed
@@ -247,6 +282,74 @@ public class UserServlet extends HttpServlet {
 				
 			}
 		}
+		
+		if(uri.contains("/showChechout.udo")) {
+			HttpSession session = request.getSession(false);
+			if(session==null || session.getAttribute("user")==null) {
+				request.setAttribute("errorMsg", "First login, then add Contact!");
+				rd = request.getRequestDispatcher("Error.jsp");
+				rd.forward(request, response);
+			} 
+			else {
+				String userEmail=(String)session.getAttribute("user");
+				LOG.info("User Email "+userEmail);
+				Enumeration<String> names=request.getParameterNames();
+				List<String> productNames=new ArrayList<String>();
+				while (names.hasMoreElements()) {
+					String param = names.nextElement();
+					productNames.add(request.getParameter(param));
+					LOG.info("Param "+param);
+				}
+				
+				List<CartBean> cart=model.fetchSpecificCartProducts(productNames, userEmail);
+				if(cart!=null) {
+					request.setAttribute("checkoutList", cart);
+					rd=request.getRequestDispatcher("viewCheckout.jsp");
+					rd.forward(request, response);
+				}
+				else {
+					// Login failed
+					rd=request.getRequestDispatcher("home.html");
+					rd.forward(request, response);
+				}
+				
+			}
+		}
+		
+		if(uri.contains("/deleteCartProduct.udo")) {
+			HttpSession session = request.getSession(false);
+			if(session==null || session.getAttribute("user")==null) {
+				request.setAttribute("errorMsg", "First login, then add Contact!");
+				rd = request.getRequestDispatcher("Error.jsp");
+				rd.forward(request, response);
+			} 
+			else {
+				String userEmail=(String)session.getAttribute("user");
+				String name=request.getParameter("productName");
+				String result=model.deleteCartProduct(userEmail,name);
+				if(result.equals(Constants.SUCCESS)) {
+					request.setAttribute("msg", "Product has been deleted Successfully from Cart!!!");
+					List<CartBean> users=model.fetchCartProducts(userEmail);
+					if(users!=null) {
+						request.setAttribute("cartProducts", users);
+						rd=request.getRequestDispatcher("viewCart.jsp");
+						rd.forward(request, response);
+					}
+					else {
+						//request.setAttribute("errorMsg", );
+						rd=request.getRequestDispatcher("home.html");
+						rd.forward(request, response);
+					}
+				}
+				else {
+					// Login failed
+					request.setAttribute("errorMsg", result);
+					rd=request.getRequestDispatcher("home.html");
+					rd.forward(request, response);
+				}
+			}
+		}
+
 	}
 
 }
