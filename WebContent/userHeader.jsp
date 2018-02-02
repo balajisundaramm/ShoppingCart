@@ -5,10 +5,9 @@
 	</div>
 	<div class="row">
 		<div class="col-xs-4">
-		<button class="btn btn-info" onclick"
+			<button class="btn btn-info" onclick="
 			location.href='home.udo';">
-			e-Cart
-			</button>
+				e-Cart</button>
 			<div class="w3-dropdown-hover">
 				<button class="btn btn-info">Categories</button>
 				<div class="w3-dropdown-content w3-bar-block w3-border">
@@ -23,7 +22,7 @@
 		</div>
 		<div class="col-xs-6 text-right">
 
-			<button class="btn btn-info" onclick="location.href='logout.ado';">View
+			<button class="btn btn-info" onclick="location.href='viewCart.jsp';">View
 				Cart</button>
 			<button class="btn btn-info" onclick="location.href='logout.ado';">Logout</button>
 		</div>

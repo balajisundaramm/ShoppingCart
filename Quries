@@ -47,4 +47,32 @@ CREATE TABLE `ShoppingCart`.`Users` (
   UNIQUE INDEX `idUsers_UNIQUE` (`idUsers` ASC),
   UNIQUE INDEX `Email_UNIQUE` (`Email` ASC),
   UNIQUE INDEX `Mobile_UNIQUE` (`Mobile` ASC));
+------------------------------------------
+Cart
+------------------------------------------
+CREATE TABLE `ShoppingCart`.`Cart` (
+  `idCart` INT NOT NULL AUTO_INCREMENT,
+  `CategoryName` VARCHAR(45) NOT NULL,
+  `ProductName` VARCHAR(45) NOT NULL,
+  `Items` INT NOT NULL,
+  PRIMARY KEY (`idCart`),
+  UNIQUE INDEX `idCart_UNIQUE` (`idCart` ASC));
+------------------------------------------------
+Reform Cart
+---------------------------------------------------
+ALTER TABLE `ShoppingCart`.`Cart` 
+CHANGE COLUMN `CategoryName` `UserEmail` VARCHAR(45) NOT NULL ,
+ADD COLUMN `ProductPrice` INT NOT NULL AFTER `Items`;
+----------------------------------------------------------
+Checkout
+-----------------------------------------------
+CREATE TABLE `ShoppingCart`.`Checkout` (
+  `idCheckout` INT NOT NULL AUTO_INCREMENT,
+  `UserEmail` VARCHAR(45) NOT NULL,
+  `ProductName` VARCHAR(45) NOT NULL,
+  `ProductPrice` INT NOT NULL,
+  `Item` VARCHAR(45) NOT NULL,
+  PRIMARY KEY (`idCheckout`),
+  UNIQUE INDEX `idCheckout_UNIQUE` (`idCheckout` ASC));
+
 

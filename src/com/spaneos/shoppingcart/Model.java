@@ -83,7 +83,7 @@ public class Model {
 		}
 
 	}
-	
+
 	public String updateCategory(CategoryBean bean) {
 		Connection con=null;
 		PreparedStatement ps_up=null;						
@@ -198,8 +198,8 @@ public class Model {
 			return null;
 		}
 	}
-	
-	
+
+
 	public String userLogin(UserLoginBean bean) {
 		Connection con = null;
 		PreparedStatement ps_sql = null, ps_ins = null;
@@ -260,8 +260,8 @@ public class Model {
 			return null;
 		}
 	}
-	
-	
+
+
 	public List<UserRegistrationBean> fetchSpecificUser(String requestEmail){
 		Connection con = null;
 		PreparedStatement ps_sql = null, ps_ins = null;
@@ -360,8 +360,8 @@ public class Model {
 		}
 
 	}
-	
-	
+
+
 	public String updateProduct(ProductBean bean) {
 		Connection con=null;
 		PreparedStatement ps_up=null;
@@ -431,7 +431,7 @@ public class Model {
 			return null;
 		}
 	}
-	
+
 	public List<ProductBean> fetchSpecificProduct(String productName){
 		LOG.info("Modal product name"+productName);
 		Connection con = null;
@@ -477,9 +477,9 @@ public class Model {
 			return null;
 		}
 	}
-	
-	
-	
+
+
+
 	/**
 	 * 
 	 * @param name
@@ -509,7 +509,7 @@ public class Model {
 			return "Oops something went wrong!" + e.getMessage();
 		}
 	}
-	
+
 	public String deleteCategory(String name) {
 		Connection con = null;
 		PreparedStatement ps_del = null;
@@ -537,7 +537,7 @@ public class Model {
 			return "Oops something went wrong!" + e.getMessage();
 		}
 	}
-	
+
 	public List<ProductBean> fetchAllProducts(){
 		Connection con = null;
 		PreparedStatement ps_sql = null;
@@ -579,5 +579,43 @@ public class Model {
 		}
 
 	}
-	
+
+	public String addCart(List<PurchaseBean> beans, String userEmail) {
+		Connection con=null;
+		PreparedStatement ps_ins=null, ps_up=null;
+		try {
+			con=JDBCHelper.getConnection();
+			if(con==null) {
+				throw new RuntimeException("Cannot connect to DB. Contact admin.");
+			}
+			else {
+				for (PurchaseBean purchaseBean : beans) {
+					ps_ins=con.prepareStatement("insert into Cart (UserEmail,ProductName,ProductPrice,Items) values(?,?,?,?)");
+					ps_ins.setString(1, userEmail);
+					ps_ins.setString(2, purchaseBean.getProductName());
+					for (ProductBean product : fetchSpecificProduct(purchaseBean.getProductName())) {
+						ps_ins.setInt(3, product.getPrice());
+					}
+					ps_ins.setInt(4, purchaseBean.getQuantity());
+					ps_ins.execute();
+
+					for (ProductBean product : fetchSpecificProduct(purchaseBean.getProductName())) {
+						ps_up=con.prepareStatement("Update Products SET InStock=? Where Name=?");
+						int newStock=product.getStock()-purchaseBean.getQuantity();
+						ps_up.setInt(1, newStock);
+						ps_up.setString(2, purchaseBean.getProductName());
+						ps_up.execute();
+
+					}
+
+				}
+				return "SUCCESS";		
+			}
+		}
+		catch (SQLException e) {
+			e.printStackTrace();
+			return "Oops something went wrong!"+e.getMessage();
+		}
+	}
+
 }

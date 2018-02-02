@@ -35,7 +35,13 @@ input[type="checkbox"]{
 }
 </style>
 <script>
-	
+$(document).ready(function() {
+	$("input:checkbox").click(function(){
+	    var group = "input:checkbox[name='"+$(this).prop("name")+"']";
+	    $(group).prop("checked",false);
+	    $(this).prop("checked",true);
+	});
+});
 </script>
 
 </head>
@@ -50,7 +56,7 @@ input[type="checkbox"]{
 			<div><h4>Products : </h4></div>
 			<table class="table" id="empTable">
 				<tr>
-					<th><input type="checkbox" name="check"></th>
+					<th></th>
 					<th>Products</th>
 					<th>Price</th>
 					<th>In Stock</th>

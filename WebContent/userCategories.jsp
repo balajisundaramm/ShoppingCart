@@ -31,7 +31,80 @@ input, textarea {
 }
 </style>
 <script>
-	$('document')
+	var index = 0;
+	$(document).ready(function() {
+		$('input[type=checkbox]').on('change', function() {
+			if ($(this).is(':checked')) {
+				$('#').val(null)
+				$('#return').prop('disabled', 'disabled')
+			}
+		});
+
+		var i = 0;
+
+		$('input[type=checkbox]').each(function() {
+			i++;
+			var name = 'product_' + i;
+			var id = 'id_' + i;
+			$(this).attr('name', name);
+			$(this).attr('id', id);
+		});
+		var x = 0;
+		$('input[type=number]').each(function() {
+			x++;
+			var newID = 'number_' + x;
+			var numId = 'num_id_' + x;
+			$(this).attr('name', newID);
+			$(this).attr('id', numId);
+		});
+		$('input').each(function(index, value) {
+			$('#id_' + (index + 1)).on('click', function() {
+				if ($(this).is(':checked')) {
+					$('#num_id_' + (index + 1)).prop('disabled', false)
+				} else {
+					$('#num_id_' + (index + 1)).val('')
+					$('#num_id_' + (index + 1)).prop('disabled', 'disabled')
+				}
+
+			});
+
+		});
+		$('#cart').submit(function(e) {
+			e.preventDefault();
+			var valid = true;
+			var count = 0;
+			$('input[type=checkbox]').each(function() {
+				if ($(this).is(':checked')) {
+					count++;
+				}
+			});
+			if (count < 1) {
+				valid = false;
+				count = 0;
+				alert("Select atleast a product.");
+			}
+			if (count > 2) {
+				valid = false;
+				count = 0;
+				alert("Maximum 2 products only allowed at a time.");
+			}
+			if(valid){
+				(this).submit();
+			}
+		});
+
+		/* $("input:checkbox").click(function(){
+		    var group = "input:checkbox[name='"+$(this).prop("name")+"']";
+		    $(group).prop("checked",false);
+		    $(this).prop("checked",true);
+		}); */
+
+		//Same query but used .not
+		/* $("input:checkbox").click(function(){
+		    var group = "input:checkbox[name='"+$(this).prop("name")+"']";
+		    $(group).not(this).prop("checked",false);
+		}); */
+	});
 </script>
 
 </head>
@@ -45,27 +118,37 @@ input, textarea {
 			<div>
 				<h4>Category : ${categoryName}</h4>
 			</div>
-			<table class="table" id="empTable">
-				<tr>
-					<th><input type="checkbox" name="check"></th>
-					<th>Products</th>
-					<th>Price</th>
-					<th>In Stock</th>
-				</tr>
-				<jstl:forEach items="${listOfProducts}" var="allProducts">
+			<form id="cart" action="addToCartDB.udo" method="get">
+				<table class="table" id="empTable">
+					<col width="10%">
+					<col width="45%">
+					<col width="20%">
+					<col width="15%">
+					<col width="10%">
 					<tr>
-						<td><input type="checkbox" name="allProducts"
-							value="${allProducts.productName}"></td>
-						<td>${allProducts.productName}</td>
-						<td>${allProducts.price}</td>
-						<td>${allProducts.stock}</td>
+						<th></th>
+						<th>Products</th>
+						<th>Price</th>
+						<th>In Stock</th>
+						<th>Quantity</th>
 					</tr>
-				</jstl:forEach>
-			</table>
-			<div class="col-sm-offset-10">
-				<button id="" type="button" class="btn btn-info" data-toggle="modal"
-					data-target="#addCart">Add to Cart</button>
-			</div>
+					<jstl:forEach items="${listOfProducts}" var="allProducts">
+						<tr>
+							<td><input id="check" type="checkbox" name="a"
+								value="${allProducts.productName}"></td>
+							<td>${allProducts.productName}</td>
+							<td>${allProducts.price}</td>
+							<td>${allProducts.stock}</td>
+							<td><input type="number" min=0 max='${allProducts.stock}'
+								name="ad" id="old" size="2" disabled="disabled" /></td>
+						</tr>
+					</jstl:forEach>
+				</table>
+				<div class="col-sm-offset-10">
+					<input id="addCart" type="submit" value="Add to Cart"
+						class="btn btn-info" />
+				</div>
+			</form>
 		</div>
 		<!--Modal for add to cart  -->
 		<div class="modal fade" id="addCart" role="dialog">
@@ -76,10 +159,8 @@ input, textarea {
 						<h4 class="modal-title">Product Details</h4>
 					</div>
 					<div class="modal-content">
-						<div>
-							
-						</div>
-										
+						<div></div>
+
 					</div>
 					<div class="modal-footer">
 						<a href="#" id="" class="btn btn-info">Add to cart</a>
