@@ -74,12 +74,12 @@ input, textarea {
 			if (count < 1) {
 				valid = false;
 				count = 0;
-				alert("Select atleast a product.");
+				alert("No Product selected.");
 			}
-			if (count > 2) {
+			if (count > 3) {
 				valid = false;
 				count = 0;
-				alert("Maximum 2 products only allowed at a time.");
+				alert("Maximum 3 products only allowed at a time.");
 			}
 			if(valid){
 				(this).submit();

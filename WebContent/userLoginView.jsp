@@ -24,20 +24,25 @@ input, textarea {
 	width: 100%;
 }
 
-span {
-	color: red;
-}
 </style>
 <script>
 $('#userLoginForm')[0].reset();
-
+$("#success").show();
+	setTimeout(function() {
+		$("#success").hide();
+    }, 2000);
+$("#error").show();
+	setTimeout(function() {
+		$("#error").hide();
+		}, 2000);
 </script>
 </head>
 <body>
 	<div class="container">
 		<div class="row" id="header">
 			<div class="col-xs-4">
-				<button class="btn btn-info" onclick="location.href='home.html';">Admin Login</button>
+				<button class="btn btn-info" onclick="location.href='home.html';">Admin
+					Login</button>
 			</div>
 			<div class="col-xs-6 text-right">
 				<button class="btn btn-info" data-toggle="modal"
@@ -48,7 +53,26 @@ $('#userLoginForm')[0].reset();
 					data-target="#userLogin">Login</button>
 			</div>
 		</div>
+		<h1 id="error">${errorMsg}</h1>		
 	</div>
+	<!--Error modal  -->
+	<%-- <div class="modal fade" id="error" role="dialog">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal">&times;</button>
+					<h4 class="modal-title">User Login</h4>
+				</div>
+					<div class="modal-body">
+						<h1>${message}</h1>
+         				<h1>${errorMsg}</h1>
+					</div>
+					<div class="modal-footer">
+						<button type="button" id="adminLogin" class="btn btn-info">Okay</button>
+					</div>
+			</div>
+			</div>
+		</div> --%>
 
 	<!--SignUp modal  -->
 	<div class="modal fade" id="userRegistration" role="dialog">
@@ -58,7 +82,8 @@ $('#userLoginForm')[0].reset();
 					<button type="button" class="close" data-dismiss="modal">&times;</button>
 					<h4 class="modal-title">New User Registration</h4>
 				</div>
-				<form id="myForm" class="modalview" action="userRegisterInt.jsp" method="post">
+				<form id="myForm" class="modalview" action="userRegisterInt.jsp"
+					method="post">
 					<div class="modal-body">
 						<div class="col-sm-2">
 							<lable>Name:<span>*</span></lable>
@@ -79,15 +104,17 @@ $('#userLoginForm')[0].reset();
 							<lable>Password:<span>*</span></lable>
 						</div>
 						<div class="col-sm-10">
-							<input type="password" id="" name="userPassword" class="addInputs"
-								placeholder="Enter name" required><br /> <br />
+							<input type="password" id="" name="userPassword"
+								class="addInputs" placeholder="Enter name" required><br />
+							<br />
 						</div>
 						<div class="col-sm-2">
 							<lable>Retype Password:<span>*</span></lable>
 						</div>
 						<div class="col-sm-10">
-							<input type="password" id="" name="userRePassword" class="addInputs"
-								placeholder="Enter name" required><br /> <br />
+							<input type="password" id="" name="userRePassword"
+								class="addInputs" placeholder="Enter name" required><br />
+							<br />
 						</div>
 						<div class="col-sm-2">
 							<lable>Mobile:<span>*</span></lable>
@@ -127,8 +154,7 @@ $('#userLoginForm')[0].reset();
 							<textarea rows="5" cols="255" maxlength="2000"
 								placeholder="Billing Address" name="userAddress">
 							</textarea>
-							<br />
-							<br />
+							<br /> <br />
 						</div>
 					</div>
 					<div class="modal-footer">
@@ -148,7 +174,7 @@ $('#userLoginForm')[0].reset();
 					<button type="button" class="close" data-dismiss="modal">&times;</button>
 					<h4 class="modal-title">User Login</h4>
 				</div>
-				<form id="userLoginForm" class="modalview" action="userLoginInt.jsp" 
+				<form id="userLoginForm" class="modalview" action="userLoginInt.jsp"
 					method="post">
 					<div class="modal-body">
 						<div class="col-sm-3">

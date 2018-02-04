@@ -56,12 +56,11 @@ public class UserServlet extends HttpServlet {
 		String uri=request.getRequestURI();
 		LOG.info("URI-->"+uri);
 		Model model= new Model();
-		String con=new Model().register();
-		LOG.info(con);
 
 		List<CategoryBean> categories=model.getCategories();
 		LOG.info("Category bean "+categories);
 		request.setAttribute("category",categories);
+		
 
 		// Create Request Dispatcher & assign null
 		RequestDispatcher rd=null;
@@ -107,7 +106,7 @@ public class UserServlet extends HttpServlet {
 			}
 			else {
 				request.setAttribute("errorMsg", result);
-				rd=request.getRequestDispatcher("userHome.jsp");
+				rd=request.getRequestDispatcher("userLoginView.jsp");
 				rd.forward(request, response);
 			}
 		}
@@ -283,6 +282,61 @@ public class UserServlet extends HttpServlet {
 			}
 		}
 		
+		if(uri.contains("/checkout.udo")) {
+			HttpSession session = request.getSession(false);
+			if(session==null || session.getAttribute("user")==null) {
+				request.setAttribute("errorMsg", "First login, then add Contact!");
+				rd = request.getRequestDispatcher("Error.jsp");
+				rd.forward(request, response);
+			} 
+			else {
+				String userEmail=(String)session.getAttribute("user");
+				LOG.info("User Email "+userEmail);
+				Enumeration<String> names=request.getParameterNames();
+				List<String> productNames=new ArrayList<String>();
+				while (names.hasMoreElements()) {
+					String param = names.nextElement();
+					productNames.add(request.getParameter(param));
+					LOG.info("Param "+param);
+				}
+				
+				List<CartBean> cartProducts=model.fetchSpecificCartProducts(productNames, userEmail);
+				if(cartProducts!=null) {
+					request.setAttribute("checkoutList", cartProducts);
+					rd=request.getRequestDispatcher("viewCheckout.jsp");
+					rd.forward(request, response);
+				}
+				else {
+					// Login failed
+					rd=request.getRequestDispatcher("home.html");
+					rd.forward(request, response);
+				}
+				/*String result=model.addCheckout(cartProducts, userEmail);
+				if(result.equals(Constants.SUCCESS)) {
+					request.setAttribute("message", "Product has been successfully added to Checkout!!! ");
+					List<CartBean> products=model.fetchCartProducts(userEmail);
+					LOG.info("CartBean "+ products);
+					if(products!=null) {
+						request.setAttribute("checkoutList", products);
+						rd=request.getRequestDispatcher("viewCheckout.jsp");
+						rd.forward(request, response);
+					}
+					else {
+						//request.setAttribute("errorMsg", );
+						rd=request.getRequestDispatcher("home.html");
+						rd.forward(request, response);
+					}
+				}
+				else {
+					// Login failed
+					request.setAttribute("errorMsg", result);
+					rd=request.getRequestDispatcher("home.html");
+					rd.forward(request, response);
+				}*/
+				
+			}
+		}
+		
 		if(uri.contains("/showChechout.udo")) {
 			HttpSession session = request.getSession(false);
 			if(session==null || session.getAttribute("user")==null) {
@@ -326,7 +380,8 @@ public class UserServlet extends HttpServlet {
 			else {
 				String userEmail=(String)session.getAttribute("user");
 				String name=request.getParameter("productName");
-				String result=model.deleteCartProduct(userEmail,name);
+				String result=model.deleteCartProduct(name,userEmail);
+				LOG.info("result "+result);
 				if(result.equals(Constants.SUCCESS)) {
 					request.setAttribute("msg", "Product has been deleted Successfully from Cart!!!");
 					List<CartBean> users=model.fetchCartProducts(userEmail);
@@ -334,7 +389,7 @@ public class UserServlet extends HttpServlet {
 						request.setAttribute("cartProducts", users);
 						rd=request.getRequestDispatcher("viewCart.jsp");
 						rd.forward(request, response);
-					}
+					} 
 					else {
 						//request.setAttribute("errorMsg", );
 						rd=request.getRequestDispatcher("home.html");
@@ -343,6 +398,43 @@ public class UserServlet extends HttpServlet {
 				}
 				else {
 					// Login failed
+					LOG.info("Login failed");
+					request.setAttribute("errorMsg", result);
+					rd=request.getRequestDispatcher("home.html");
+					rd.forward(request, response);
+				}
+			}
+		}
+		
+		if(uri.contains("/deleteCheckoutProduct.udo")) {
+			HttpSession session = request.getSession(false);
+			if(session==null || session.getAttribute("user")==null) {
+				request.setAttribute("errorMsg", "First login, then add Contact!");
+				rd = request.getRequestDispatcher("Error.jsp");
+				rd.forward(request, response);
+			} 
+			else {
+				String userEmail=(String)session.getAttribute("user");
+				String name=request.getParameter("productName");
+				String result=model.deleteCheckoutProduct(name,userEmail);
+				LOG.info("result "+result);
+				if(result.equals(Constants.SUCCESS)) {
+					request.setAttribute("msg", "Product has been deleted Successfully from Checkout!!!");
+					List<CartBean> users=model.fetchCartProducts(userEmail);
+					if(users!=null) {
+						request.setAttribute("cartProducts", users);
+						rd=request.getRequestDispatcher("viewCart.jsp");
+						rd.forward(request, response);
+					} 
+					else {
+						//request.setAttribute("errorMsg", );
+						rd=request.getRequestDispatcher("home.html");
+						rd.forward(request, response);
+					}
+				}
+				else {
+					// Login failed
+					LOG.info("Login failed");
 					request.setAttribute("errorMsg", result);
 					rd=request.getRequestDispatcher("home.html");
 					rd.forward(request, response);

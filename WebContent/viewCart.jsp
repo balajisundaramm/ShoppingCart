@@ -36,6 +36,29 @@ input, textarea {
 			$(this).attr('name', name);
 			$(this).attr('id', id);
 		});
+		$('#cart').submit(function(e) {
+			e.preventDefault();
+			var valid = true;
+			var count = 0;
+			$('input[type=checkbox]').each(function() {
+				if ($(this).is(':checked')) {
+					count++;
+				}
+			});
+			if (count < 1) {
+				valid = false;
+				count = 0;
+				alert("No Product selected.");
+			}
+			/* if (count > 3) {
+				valid = false;
+				count = 0;
+				alert("Maximum 3 products only allowed at a time.");
+			} */
+			if(valid){
+				(this).submit();
+			}
+		});
 	});
 </script>
 
@@ -50,7 +73,7 @@ input, textarea {
 			<div>
 				<h4>Items in your Cart :</h4>
 			</div>
-			<form id="cart" action="showChechout.udo" method="get">
+			<form id="cart" action="checkout.udo" method="get">
 				<table class="table" id="empTable">
 					<col width="10%">
 					<col width="45%">
@@ -81,7 +104,7 @@ input, textarea {
 					</jstl:forEach>
 				</table>
 				<div class="col-sm-offset-8 col-sm-2">
-					<input id="addCart" type="submit" value="Chech out"
+					<input id="addCart" type="submit" value="Proceed"
 						class="btn btn-info" />
 				</div>
 			</form>

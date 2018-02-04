@@ -33,11 +33,11 @@ input, textarea {
 }
 </style>
 <script>
-	function init() {
+	 function init() {
 		// Clear forms here
 		document.getElementById("text").value = "";
 	}
-	window.onload = init;
+	window.onload = init; 
 </script>
 </head>
 <body>

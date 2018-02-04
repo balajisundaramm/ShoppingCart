@@ -149,7 +149,7 @@ public class Model {
 		try {
 			con=JDBCHelper.getConnection();
 			if(con==null) {
-				return "cannot connect to DB. Contact admin!!!";
+				throw new RuntimeException("Cannot connect to DB.");
 			}
 			else {
 				ps_ins=con.prepareStatement("insert into Users"
@@ -171,6 +171,36 @@ public class Model {
 			return null;
 		}
 	}
+	
+	/*public String getUserName(String email) {
+		Connection con=null;
+		PreparedStatement ps_sql=null, ps_ins=null;
+		ResultSet rs=null;
+		try {
+			con=JDBCHelper.getConnection();
+			if(con==null) {
+				throw new RuntimeException("Cannot connect to DB.");
+			}
+			else {
+				ps_sql=con.prepareStatement("select Name from Users where Email=?");
+				ps_sql.execute();
+				rs=ps_sql.getResultSet();
+				while(rs.next()) {
+					String name=rs.getString("CategoryName");
+					String description=rs.getString("CategoryDescription");
+					CategoryBean bean=new CategoryBean();
+					bean.setCategoryName(name);
+					bean.setCategoryDescription(description);
+					categories.add(bean);
+				}
+				return categories;
+			}
+		}
+		catch (SQLException e) {
+			e.printStackTrace();
+			return null;
+		}	
+	}*/
 
 	public String updateUser(UserRegistrationBean bean) {
 		Connection con=null;
@@ -618,6 +648,32 @@ public class Model {
 		}
 	}
 	
+	public String addCheckout(List<CartBean> beans, String userEmail) {
+		Connection con=null;
+		PreparedStatement ps_ins=null;
+		try {
+			con=JDBCHelper.getConnection();
+			if(con==null) {
+				throw new RuntimeException("Cannot connect to DB. Contact admin.");
+			}
+			else {
+				for (CartBean cartBean : beans) {
+					ps_ins=con.prepareStatement("insert into Checkout (UserEmail,ProductName,ProductPrice,Items) values(?,?,?,?)");
+					ps_ins.setString(1, userEmail);
+					ps_ins.setString(2, cartBean.getProductName());
+					ps_ins.setInt(3, cartBean.getPrice());
+					ps_ins.setInt(4, cartBean.getQuantity());
+					ps_ins.execute();
+				}
+				return "SUCCESS";		
+			}
+		}
+		catch (SQLException e) {
+			e.printStackTrace();
+			return "Oops something went wrong!"+e.getMessage();
+		}
+	}
+	
 	
 	public List<CartBean> fetchCartProducts(String userEmail){	
 		Connection con = null;
@@ -690,10 +746,11 @@ public class Model {
 		catch (SQLException e) {
 			e.printStackTrace();
 			return null;
-		}
+		} 
 	}
 	
 	public String deleteCartProduct(String productName, String email) {
+		LOG.info("Email "+email+" name "+productName);
 		Connection con = null;
 		PreparedStatement ps_del = null;
 		try {
@@ -705,9 +762,41 @@ public class Model {
 				ps_del.setString(1, email);
 				ps_del.setString(2, productName);
 				if(ps_del.executeUpdate()==1) {
+					LOG.info("Delete cart product successfull!!!");
 					return Constants.SUCCESS;
 				}
 				else {
+					//delete from Cart where UserEmail='Balaji' and ProductName='Coffee maker'; 
+
+					return "Cannot delete the Product from Cart.";
+				}
+			}
+		}
+		catch (SQLException e) {
+			e.printStackTrace();
+			return "Oops something went wrong!" + e.getMessage();
+		}
+	} 
+	
+	public String deleteCheckoutProduct(String productName, String email) {
+		LOG.info("Email "+email+" name "+productName);
+		Connection con = null;
+		PreparedStatement ps_del = null;
+		try {
+			con = JDBCHelper.getConnection();
+			if (con == null) {
+				throw new RuntimeException("Cannot connect to DB. Contact admin");
+			} else {
+				ps_del = con.prepareStatement("delete from Checkout where UserEmail=? and ProductName=?");
+				ps_del.setString(1, email);
+				ps_del.setString(2, productName);
+				if(ps_del.executeUpdate()==1) {
+					LOG.info("Delete cart product successfull!!!");
+					return Constants.SUCCESS;
+				}
+				else {
+					//delete from Cart where UserEmail='Balaji' and ProductName='Coffee maker'; 
+
 					return "Cannot delete the Product from Cart.";
 				}
 			}

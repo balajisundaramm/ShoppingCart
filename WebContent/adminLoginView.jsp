@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
+	<%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="jstl"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
@@ -84,13 +85,14 @@ input {
 									data-validation-error-msg-required="User name cannot be empty"
 									data-validation-error-msg-pattern ="Enter admin" /><br />
 								<br />
+								<p>${errorMsg }</p>
 							</div>
 							<div class="col-sm-3" id="email-error-dialog">
 								<lable>Password: (admin123)</lable>
 							</div>
 							<div class="col-sm-9">
 								<input type="password" pattern="^(admin123)$" class="addInputs" id="upass"
-									name="adminPassword" placeholder="Enter admin123" required
+									name="adminPassword" required
 									data-validation="required pattern"
 									data-validation-error-msg-required="Password cannot be empty"
 									data-validation-error-msg-pattern ="Enter admin123"><br />
